@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+#  api:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: giusti-gestao-credito-api
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - postgres
+#    environment:
+#      - NODE_ENV=development
+#      - POSTGRES_HOST=postgres
+#      - POSTGRES_PORT=5432
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_DB=giusti-gestao-credito
+#      - TYPEORM_LOGGING=true
+#      - TYPEORM_MIGRATIONS_RUN=true
+#    volumes:
+#      - ./src:/app/src
+#    command: >
+#      sh -c "sleep 5 && npm install --legacy-peer-deps && npm run migration:run && npm start"
+#    networks:
+#      - giusti-gestao-credito-network
+#    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: giusti-gestao-credito-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=giusti-gestao-credito
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - giusti-gestao-credito-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  giusti-gestao-credito-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
