@@ -6,7 +6,7 @@ export class Carteira {
   id: number;
 
   @Column({ length: 100 })
-  name: string;
+  nome: string;
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

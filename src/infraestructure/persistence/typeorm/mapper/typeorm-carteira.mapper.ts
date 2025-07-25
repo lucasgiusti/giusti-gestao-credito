@@ -8,7 +8,7 @@ export class TypeOrmCarteiraMapper {
         
         const model = new Carteira({
             id: entity.id,
-            name: entity.name,
+            nome: entity.nome,
             createdAt: entity.created_at,
             updatedAt: entity.updated_at,
         });
@@ -17,7 +17,7 @@ export class TypeOrmCarteiraMapper {
 
     static toTypeOrm(carteira: Carteira) {
         return {
-            name: carteira.name,
+            nome: carteira.nome,
             created_at: carteira.createdAt,
             updated_at: carteira.updatedAt,
         }

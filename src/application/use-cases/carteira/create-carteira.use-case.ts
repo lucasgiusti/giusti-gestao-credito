@@ -3,7 +3,7 @@ import { ICarteiraRepository } from 'src/application/interfaces/repositories/car
 import { Carteira } from 'src/domain/entities/carteira';
 
 interface CreateCarteiraUseCaseCommand {
-    name: string,
+    nome: string,
 }
 
 @Injectable()
@@ -14,10 +14,10 @@ export class CreateCarteiraUseCase {
     ) {}
 
     async execute({
-        name,
+        nome,
     }: CreateCarteiraUseCaseCommand): Promise<Carteira> {
         const carteira = new Carteira({
-            name,
+            nome,
         });
 
         const response = await this.carteiraRepository.create(carteira);

@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from '@nestjs/schedule';
 import { PersistenceModule } from './infraestructure/persistence/persistence.module';
 import { HttpModule } from './infraestructure/http/http.module';
+import { SupabaseModule } from './infraestructure/config/supabase.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { HttpModule } from './infraestructure/http/http.module';
     }),
     HttpModule,
     ScheduleModule.forRoot(),
+    SupabaseModule,
   ],
   controllers: [],
   providers: [],

@@ -1,6 +1,6 @@
 export class Carteira {
     id?: number;
-    name: string;
+    nome: string;
     createdAt?: Date;
     updatedAt?: Date;
     

@@ -5,5 +5,5 @@ export class CreateCarteiraDto {
     @ApiProperty({ example: 'Nome da carteira' })
     @IsNotEmpty({ message: 'O nome da carteira é obrigatório' })
     @IsString({ message: 'O nome da carteira deve ser uma string' })
-    name: string;
+    nome: string;
 }
