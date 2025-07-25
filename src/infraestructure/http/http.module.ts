@@ -9,6 +9,7 @@ import { EventBusService } from "src/infraestructure/events/event-bus.service";
 import { UpdateSupabaseUserMetadataUseCase } from "src/application/use-cases/user/update-supabase-user-metadata.use-case";
 import { SupabaseModule } from "../config/supabase.module";
 import { FindAllUsersUseCase } from "src/application/use-cases/user/find-all-users.use-case";
+import { UpdateUserUseCase } from "src/application/use-cases/user/update-user.use-case";
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { FindAllUsersUseCase } from "src/application/use-cases/user/find-all-use
         CreateUserUseCase,
         UpdateSupabaseUserMetadataUseCase,
         FindAllUsersUseCase,
+        UpdateUserUseCase,
     ],
     controllers: [
         CarteiraController,

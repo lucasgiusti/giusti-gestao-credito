@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
 import { User } from 'src/domain/entities/user';
@@ -7,6 +7,8 @@ import { Authenticated } from '../../decorators/authenticated.decorator';
 import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 import { FindAllUsersUseCase } from 'src/application/use-cases/user/find-all-users.use-case';
 import { UserResponseDto } from '../dtos/user/user-response.dto';
+import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
+import { UpdateUserDto } from '../dtos/user/update-user.dto';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -15,6 +17,7 @@ export class UserController {
     constructor(
         private readonly createUserUseCase: CreateUserUseCase,
         private readonly findAllUsersUseCase: FindAllUsersUseCase,
+        private readonly updateUserUseCase: UpdateUserUseCase,
     ) {}
 
     @Auth()
@@ -39,5 +42,23 @@ export class UserController {
     async findAll(): Promise<UserResponseDto[]> {
         const users = await this.findAllUsersUseCase.execute({});
         return UserResponseDto.fromEntities(users);
+    }
+
+    @Auth('MASTER', 'ADMIN')
+    @Put(':id')
+    @ApiOperation({ summary: 'Atualizar um usuário', description: 'Atualiza um usuário com base nos dados do usuário autenticado' })
+    @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso', type: UserResponseDto })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    @ApiResponse({ status: 403, description: 'Acesso proibido' })
+    async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+        const user = await this.updateUserUseCase.execute({
+            authenticatedUser,
+            id,
+            name: updateUserDto.name,
+            status: updateUserDto.status,
+            userRole: updateUserDto.userRole,
+        });
+        return UserResponseDto.fromEntity(user);
     }
 }

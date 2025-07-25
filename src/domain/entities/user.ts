@@ -1,3 +1,6 @@
+import { UnauthorizedException } from "@nestjs/common";
+import { AuthenticatedUser } from "./authenticated-user";
+
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
     INACTIVE = 'INACTIVE',
@@ -114,4 +117,28 @@ export class User {
             authServiceUserId,
         });
     }
+
+    updateData(updatedBy: AuthenticatedUser, name?: string, status?: UserStatus, userRole?: UserRole): void {
+        // Regra 1: Usuários USER não podem alterar usuários
+        if (updatedBy.userRole === UserRole.USER) {
+          throw new UnauthorizedException('unauthorized.user.cannot.update.user');
+        }
+      
+        // Regra 2: Usuários MASTER não podem ter seu userRole e status alterados
+        if (this.isMaster() && (status !== undefined || userRole !== undefined)) {
+          throw new UnauthorizedException('unauthorized.master.cannot.update.user.role.or.status');
+        }
+      
+        if (name !== undefined && name !== null && name.trim() !== '') {
+          this._name = name;
+        }
+      
+        if (status !== undefined && !this.isMaster()) {
+          this._status = status;
+        }
+      
+        if (userRole !== undefined && !this.isMaster()) {
+          this._userRole = userRole;
+        }
+      }
 }

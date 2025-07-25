@@ -3,6 +3,8 @@ import { SupabaseService } from 'src/infraestructure/config/supabase.config';
 import { DomainEvent } from 'src/domain/events/domain-event.interface';
 import { UserCreatedEvent } from 'src/domain/events/user-created.event';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
+import { UserUpdatedEvent } from 'src/domain/events/user-updated.event';
+import { User } from 'src/domain/entities/user';
 
 @Injectable()
 export class UpdateSupabaseUserMetadataUseCase {
@@ -11,16 +13,28 @@ export class UpdateSupabaseUserMetadataUseCase {
     private readonly eventBus: EventBusService,
   ) {
     this.eventBus.subscribe('user.created', this.handleUserCreated.bind(this));
+    this.eventBus.subscribe('user.updated', this.handleUserUpdated.bind(this));
   }
 
   private async handleUserCreated(event: DomainEvent): Promise<void> {
     const { user, authServiceUserId } = (event as UserCreatedEvent).eventData;
     
+    await this.updateUserMetadata(user, authServiceUserId);
+  }
+
+  private async handleUserUpdated(event: DomainEvent): Promise<void> {
+    const { user, authServiceUserId } = (event as UserUpdatedEvent).eventData;
+    
+    await this.updateUserMetadata(user, authServiceUserId);
+  }
+
+  private async updateUserMetadata(user: User, authServiceUserId: string): Promise<void> {
     try {
       const { data, error } = await this.supabaseService.getClient().auth.admin.updateUserById(
         authServiceUserId,
         {
           user_metadata: { 
+            name: user.name,
             role: user.userRole,
             status: user.status,
          }
