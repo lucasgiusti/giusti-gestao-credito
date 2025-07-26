@@ -6,11 +6,13 @@ import { FindAllCarteirasUseCase } from "src/application/use-cases/carteira/find
 import { CreateUserUseCase } from "src/application/use-cases/user/create-user.use-case";
 import { UserController } from "./controllers/user.controller";
 import { EventBusService } from "src/infraestructure/events/event-bus.service";
-import { UpdateSupabaseUserMetadataUseCase } from "src/application/use-cases/user/update-supabase-user-metadata.use-case";
+import { UpdateSupabaseUserUseCase } from "src/application/use-cases/user/update-supabase-user.use-case";
 import { SupabaseModule } from "../config/supabase.module";
 import { FindAllUsersUseCase } from "src/application/use-cases/user/find-all-users.use-case";
 import { UpdateUserUseCase } from "src/application/use-cases/user/update-user.use-case";
 import { FindUserByIdUseCase } from "src/application/use-cases/user/find-user-by-id.use-case";
+import { DeleteSupabaseUserUseCase } from "src/application/use-cases/user/delete-supabase-user.use-case";
+import { DeleteUserUseCase } from "src/application/use-cases/user/delete-user.use-case";
 
 @Module({
     imports: [
@@ -19,13 +21,15 @@ import { FindUserByIdUseCase } from "src/application/use-cases/user/find-user-by
     ],
     providers: [
         EventBusService,
+        CreateUserUseCase,
+        FindAllUsersUseCase,
+        FindUserByIdUseCase,
+        UpdateUserUseCase,
+        DeleteUserUseCase,
         CreateCarteiraUseCase,
         FindAllCarteirasUseCase,
-        CreateUserUseCase,
-        UpdateSupabaseUserMetadataUseCase,
-        FindAllUsersUseCase,
-        UpdateUserUseCase,
-        FindUserByIdUseCase,
+        UpdateSupabaseUserUseCase,
+        DeleteSupabaseUserUseCase,
     ],
     controllers: [
         CarteiraController,

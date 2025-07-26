@@ -37,13 +37,13 @@ export class UpdateUserUseCase {
         const updatedBy = await this.userRepository.findByAuthServiceUserId(authenticatedUser.id);
 
         user.updateData(updatedBy, name, status, userRole)
-        
+
         const userUpdated = await this.userRepository.update(id, user);
         
         await this.eventBus.publish(
             new UserUpdatedEvent({
                 user: userUpdated,
-                authServiceUserId: authenticatedUser.id
+                authServiceUserId: user.authServiceUserId
             })
         );
         

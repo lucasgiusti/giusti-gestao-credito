@@ -53,7 +53,7 @@ export class TypeOrmUserRepository implements IUserRepository {
   }
 
   async delete(id: number): Promise<void> {
-    await this.userRepository.delete({ id, deleted_at: null });
+    await this.userRepository.softDelete(id);
   }
 
   async update(id: number, user: User): Promise<User | null> {

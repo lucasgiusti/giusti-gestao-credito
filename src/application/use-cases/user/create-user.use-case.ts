@@ -36,7 +36,7 @@ export class CreateUserUseCase {
         await this.eventBus.publish(
             new UserCreatedEvent({
                 user: userCreated,
-                authServiceUserId: authenticatedUser.id
+                authServiceUserId: userCreated.authServiceUserId
             })
         );
         

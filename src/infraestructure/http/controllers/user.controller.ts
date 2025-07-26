@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
 import { User } from 'src/domain/entities/user';
@@ -10,6 +10,7 @@ import { UserResponseDto } from '../dtos/user/user-response.dto';
 import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { FindUserByIdUseCase } from 'src/application/use-cases/user/find-user-by-id.use-case';
+import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -20,6 +21,7 @@ export class UserController {
         private readonly findAllUsersUseCase: FindAllUsersUseCase,
         private readonly updateUserUseCase: UpdateUserUseCase,
         private readonly findUserByIdUseCase: FindUserByIdUseCase,
+        private readonly deleteUserUseCase: DeleteUserUseCase,
     ) {}
 
     @Auth()
@@ -74,5 +76,16 @@ export class UserController {
     async findById(@Param('id') id: number): Promise<UserResponseDto> {
         const user = await this.findUserByIdUseCase.execute({ id });
         return UserResponseDto.fromEntity(user);
+    }
+
+    @Auth('MASTER', 'ADMIN')
+    @Delete(':id')
+    @ApiOperation({ summary: 'Deletar um usuário', description: 'Deleta um usuário com base no ID fornecido' })
+    @ApiResponse({ status: 204, description: 'Usuário deletado com sucesso' })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    @ApiResponse({ status: 403, description: 'Acesso proibido' })
+    async delete(@Param('id') id: number): Promise<void> {
+        await this.deleteUserUseCase.execute({ id });
     }
 }

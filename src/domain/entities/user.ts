@@ -124,8 +124,16 @@ export class User {
         }
       
         // Regra 2: Usuários MASTER não podem ter seu userRole e status alterados
-        if (this.isMaster() && (status !== undefined || userRole !== undefined)) {
+        if (this.isMaster() && ((status !== undefined && status !== UserStatus.ACTIVE) || (userRole !== undefined && userRole !== UserRole.MASTER))) {
           throw new UnauthorizedException('unauthorized.master.cannot.update.user.role.or.status');
+        }
+
+        if (userRole !== undefined && this.id === updatedBy.id && updatedBy.userRole !== userRole) {
+          throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.role');
+        }
+
+        if (status !== undefined && this.id === updatedBy.id && updatedBy.status !== status) {
+          throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.status');
         }
       
         if (name !== undefined && name !== null && name.trim() !== '') {
