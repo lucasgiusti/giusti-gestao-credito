@@ -148,4 +148,20 @@ export class User {
           this._userRole = userRole;
         }
       }
+
+      delete(updatedBy: User): void {
+        if (updatedBy.userRole === UserRole.USER) {
+          throw new UnauthorizedException('unauthorized.user.cannot.delete.user');
+        }
+
+        if (this.id === updatedBy.id) {
+          throw new UnauthorizedException('unauthorized.user.cannot.delete.yourself');
+        }
+
+        if (this.isMaster()) {
+          throw new UnauthorizedException('unauthorized.master.cannot.delete.user');
+        }
+
+        this._deletedAt = new Date();
+      }
 }

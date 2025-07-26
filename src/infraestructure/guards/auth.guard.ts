@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
         }
 
         const permissions = this.reflector.get<string[]>("permissions", context.getHandler());
+        const hasPermissions = permissions && permissions.length > 0;
         try {
             const { data, error } = await this.supabaseService.getClient().auth.getUser(token);
             
@@ -35,15 +36,15 @@ export class AuthGuard implements CanActivate {
                 throw new UnauthorizedException('unauthorized.user.not.found');
             }
 
-            if (!data.user.user_metadata?.status) {
+            if (hasPermissions && !data.user.user_metadata?.status) {
                 throw new UnauthorizedException('unauthorized.user.has.not.been.authorized.by.admin');
             }
 
-            if (data.user.user_metadata?.status !== UserStatus.ACTIVE) {
+            if (hasPermissions && data.user.user_metadata?.status !== UserStatus.ACTIVE) {
                 throw new UnauthorizedException('unauthorized.user.is.not.active.or.has.not.been.authorized.by.admin');
             }
 
-            if (permissions && permissions.length > 0 && !permissions.includes(data.user.user_metadata?.role as UserRole)) {
+            if (hasPermissions && !permissions.includes(data.user.user_metadata?.role as UserRole)) {
                 throw new UnauthorizedException('unauthorized');
             }
 

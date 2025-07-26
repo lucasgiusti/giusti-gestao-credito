@@ -52,10 +52,6 @@ export class TypeOrmUserRepository implements IUserRepository {
     return users.map(user => TypeOrmUserMapper.toDomain(user));
   }
 
-  async delete(id: number): Promise<void> {
-    await this.userRepository.softDelete(id);
-  }
-
   async update(id: number, user: User): Promise<User | null> {
     const data = TypeOrmUserMapper.toTypeOrm(user);
     

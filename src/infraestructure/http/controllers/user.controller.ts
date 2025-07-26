@@ -85,7 +85,7 @@ export class UserController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
-    async delete(@Param('id') id: number): Promise<void> {
-        await this.deleteUserUseCase.execute({ id });
+    async delete(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number): Promise<void> {
+        await this.deleteUserUseCase.execute({ authenticatedUser, id });
     }
 }

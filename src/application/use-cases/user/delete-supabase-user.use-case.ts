@@ -21,7 +21,7 @@ export class DeleteSupabaseUserUseCase {
 
   private async deleteUser(authServiceUserId: string): Promise<void> {
     try {
-      const { data, error } = await this.supabaseService.getClient().auth.admin.deleteUserById(
+      const { data, error } = await this.supabaseService.getClient().auth.admin.deleteUser(
         authServiceUserId,
       );
       
