@@ -39,7 +39,7 @@ export class Carteira {
     }
 
     // Métodos de domínio
-    update(updatedBy: User, nome?: string): void {
+    update(updatedBy: User, nome: string): void {
         // Regra 1: Usuários USER não podem alterar carteiras
         if (updatedBy.userRole === UserRole.USER) {
         throw new UnauthorizedException('unauthorized.user.cannot.update.carteira');

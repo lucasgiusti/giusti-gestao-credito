@@ -7,7 +7,7 @@ import { ICarteiraRepository } from 'src/application/interfaces/repositories/car
 interface UpdateCarteiraUseCaseCommand {
     authenticatedUser: AuthenticatedUser,
     id: number,
-    nome?: string,
+    nome: string,
 }
 
 @Injectable()
