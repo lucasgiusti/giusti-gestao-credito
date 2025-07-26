@@ -13,6 +13,8 @@ import { UpdateUserUseCase } from "src/application/use-cases/user/update-user.us
 import { FindUserByIdUseCase } from "src/application/use-cases/user/find-user-by-id.use-case";
 import { DeleteSupabaseUserUseCase } from "src/application/use-cases/user/delete-supabase-user.use-case";
 import { DeleteUserUseCase } from "src/application/use-cases/user/delete-user.use-case";
+import { UpdateCarteiraUseCase } from "src/application/use-cases/carteira/update-carteira.use-case";
+import { FindCarteiraByIdUseCase } from "src/application/use-cases/carteira/find-carteira-by-id.use-case";
 
 @Module({
     imports: [
@@ -28,6 +30,8 @@ import { DeleteUserUseCase } from "src/application/use-cases/user/delete-user.us
         DeleteUserUseCase,
         CreateCarteiraUseCase,
         FindAllCarteirasUseCase,
+        FindCarteiraByIdUseCase,
+        UpdateCarteiraUseCase,
         UpdateSupabaseUserUseCase,
         DeleteSupabaseUserUseCase,
     ],

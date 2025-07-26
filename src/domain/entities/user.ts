@@ -117,51 +117,53 @@ export class User {
         });
     }
 
-    updateData(updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole): void {
-        // Regra 1: Usuários USER não podem alterar usuários
-        if (updatedBy.userRole === UserRole.USER) {
-          throw new UnauthorizedException('unauthorized.user.cannot.update.user');
-        }
-      
-        // Regra 2: Usuários MASTER não podem ter seu userRole e status alterados
-        if (this.isMaster() && ((status !== undefined && status !== UserStatus.ACTIVE) || (userRole !== undefined && userRole !== UserRole.MASTER))) {
-          throw new UnauthorizedException('unauthorized.master.cannot.update.user.role.or.status');
-        }
-
-        if (userRole !== undefined && this.id === updatedBy.id && updatedBy.userRole !== userRole) {
-          throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.role');
-        }
-
-        if (status !== undefined && this.id === updatedBy.id && updatedBy.status !== status) {
-          throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.status');
-        }
-      
-        if (name !== undefined && name !== null && name.trim() !== '') {
-          this._name = name;
-        }
-      
-        if (status !== undefined && !this.isMaster()) {
-          this._status = status;
-        }
-      
-        if (userRole !== undefined && !this.isMaster()) {
-          this._userRole = userRole;
-        }
+    update(updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole): void {
+      // Regra 1: Usuários USER não podem alterar usuários
+      if (updatedBy.userRole === UserRole.USER) {
+        throw new UnauthorizedException('unauthorized.user.cannot.update.user');
+      }
+    
+      // Regra 2: Usuários MASTER não podem ter seu userRole e status alterados
+      if (this.isMaster() && ((status !== undefined && status !== UserStatus.ACTIVE) || (userRole !== undefined && userRole !== UserRole.MASTER))) {
+        throw new UnauthorizedException('unauthorized.master.cannot.update.user.role.or.status');
       }
 
-      delete(updatedBy: User): void {
-        if (updatedBy.userRole === UserRole.USER) {
-          throw new UnauthorizedException('unauthorized.user.cannot.delete.user');
-        }
-
-        if (this.id === updatedBy.id) {
-          throw new UnauthorizedException('unauthorized.user.cannot.delete.yourself');
-        }
-
-        if (this.isMaster()) {
-          throw new UnauthorizedException('unauthorized.master.cannot.delete.user');
-        }
-
-        this._deletedAt = new Date();
+      if (userRole !== undefined && this.id === updatedBy.id && updatedBy.userRole !== userRole) {
+        throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.role');
       }
+
+      if (status !== undefined && this.id === updatedBy.id && updatedBy.status !== status) {
+        throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.status');
+      }
+    
+      if (name !== undefined && name !== null && name.trim() !== '') {
+        this._name = name;
+      }
+    
+      if (status !== undefined && !this.isMaster()) {
+        this._status = status;
+      }
+    
+      if (userRole !== undefined && !this.isMaster()) {
+        this._userRole = userRole;
+      }
+
+      this._updatedAt = new Date();
+    }
+
+    delete(updatedBy: User): void {
+      if (updatedBy.userRole === UserRole.USER) {
+        throw new UnauthorizedException('unauthorized.user.cannot.delete.user');
+      }
+
+      if (this.id === updatedBy.id) {
+        throw new UnauthorizedException('unauthorized.user.cannot.delete.yourself');
+      }
+
+      if (this.isMaster()) {
+        throw new UnauthorizedException('unauthorized.master.cannot.delete.user');
+      }
+
+      this._deletedAt = new Date();
+    }
 }

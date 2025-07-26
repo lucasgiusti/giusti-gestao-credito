@@ -39,4 +39,18 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
     
     return carteiras.map(carteira => TypeOrmCarteiraMapper.toDomain(carteira));
   }
+
+  async update(id: number, carteira: Carteira): Promise<Carteira | null> {
+      const data = TypeOrmCarteiraMapper.toTypeOrm(carteira);
+      
+      await this.carteiraRepository.update(id, data);
+  
+      const updatedCarteira = await this.carteiraRepository.findOne({ where: { id } });
+      
+      if (!updatedCarteira) {
+        return null;
+      }
+      
+      return TypeOrmCarteiraMapper.toDomain(updatedCarteira);
+    }
 }

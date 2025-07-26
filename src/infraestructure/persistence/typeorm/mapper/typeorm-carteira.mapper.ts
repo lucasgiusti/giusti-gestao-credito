@@ -18,7 +18,6 @@ export class TypeOrmCarteiraMapper {
     static toTypeOrm(carteira: Carteira) {
         return {
             nome: carteira.nome,
-            created_at: carteira.createdAt,
             updated_at: carteira.updatedAt,
         }
     }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CarteiraResponseDto } from '../dtos/carteira/carteira-response.dto';
 import { CreateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/create-carteira.dto';
@@ -7,6 +7,9 @@ import { FindAllCarteirasUseCase } from 'src/application/use-cases/carteira/find
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 import { Authenticated } from '../../decorators/authenticated.decorator';
 import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
+import { UpdateCarteiraUseCase } from 'src/application/use-cases/carteira/update-carteira.use-case';
+import { UpdateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/update-carteira.dto';
+import { FindCarteiraByIdUseCase } from 'src/application/use-cases/carteira/find-carteira-by-id.use-case';
 
 @ApiTags('v1/carteiras')
 @Controller('v1/carteiras')
@@ -15,6 +18,8 @@ export class CarteiraController {
     constructor(
         private readonly createCarteiraUseCase: CreateCarteiraUseCase,
         private readonly findAllCarteirasUseCase: FindAllCarteirasUseCase,
+        private readonly findCarteiraByIdUseCase: FindCarteiraByIdUseCase,
+        private readonly updateCarteiraUseCase: UpdateCarteiraUseCase,
     ) {}
 
     @Auth('MASTER', 'ADMIN', 'USER')
@@ -36,5 +41,27 @@ export class CarteiraController {
     async findAll(@Authenticated() authenticatedUser: AuthenticatedUser): Promise<CarteiraResponseDto[]> {
         const carteiras = await this.findAllCarteirasUseCase.execute({});
         return CarteiraResponseDto.fromEntities(carteiras);
+    }
+
+    @Auth('MASTER', 'ADMIN', 'USER')
+    @Get(':id')
+    @ApiOperation({ summary: 'Buscar uma carteira', description: 'Retorna uma carteira com os dados fornecidos' })
+    @ApiResponse({ status: 200, description: 'Carteira retornada com sucesso', type: CarteiraResponseDto })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    async findOne(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number): Promise<CarteiraResponseDto> {
+        const carteira = await this.findCarteiraByIdUseCase.execute({id});
+        return CarteiraResponseDto.fromEntity(carteira);
+    }
+
+    @Auth('MASTER', 'ADMIN', 'USER')
+    @Put(':id')
+    @ApiOperation({ summary: 'Atualizar uma carteira', description: 'Atualiza uma carteira com os dados fornecidos' })
+    @ApiResponse({ status: 200, description: 'Carteira atualizada com sucesso', type: CarteiraResponseDto })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
+        const carteira = await this.updateCarteiraUseCase.execute({authenticatedUser, id, nome: updateCarteiraDto.nome});
+        return CarteiraResponseDto.fromEntity(carteira);
     }
 }
