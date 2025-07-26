@@ -39,7 +39,7 @@ export class Carteira {
     }
 
     // Métodos de domínio
-    update(updatedBy: User, nome: string): void {
+    update(nome: string): void {
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
         this._nome = nome;
         }
