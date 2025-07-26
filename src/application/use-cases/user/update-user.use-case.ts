@@ -34,18 +34,19 @@ export class UpdateUserUseCase {
             throw new BadRequestException('invalid.user.not.found');
         }
 
-        user.updateData(authenticatedUser, name, status, userRole)
-        
+        const updatedBy = await this.userRepository.findByAuthServiceUserId(authenticatedUser.id);
 
-        const response = await this.userRepository.update(id, user);
+        user.updateData(updatedBy, name, status, userRole)
+        
+        const userUpdated = await this.userRepository.update(id, user);
         
         await this.eventBus.publish(
             new UserUpdatedEvent({
-                user: response,
+                user: userUpdated,
                 authServiceUserId: authenticatedUser.id
             })
         );
         
-        return response;
+        return userUpdated;
     }
 }

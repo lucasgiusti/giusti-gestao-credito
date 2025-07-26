@@ -24,7 +24,7 @@ export class TypeOrmUserRepository implements IUserRepository {
 
   async findById(id: number): Promise<User | null> {
     const user = await this.userRepository.findOne({
-      where: { id }
+      where: { id, deleted_at: null }
     });
     
     if (!user) {
@@ -47,21 +47,38 @@ export class TypeOrmUserRepository implements IUserRepository {
   }
 
   async findAll(): Promise<User[]> {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find({ where: { deleted_at: null } });
     
     return users.map(user => TypeOrmUserMapper.toDomain(user));
   }
 
   async delete(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+    await this.userRepository.delete({ id, deleted_at: null });
   }
 
-  async update(id: number, user: User): Promise<User> {
+  async update(id: number, user: User): Promise<User | null> {
     const data = TypeOrmUserMapper.toTypeOrm(user);
-    const updatedUser = this.userRepository.create(data);
     
-    const savedUser = await this.userRepository.save(updatedUser);
+    await this.userRepository.update(id, data);
+
+    const updatedUser = await this.userRepository.findOne({ where: { id, deleted_at: null } });
     
-    return TypeOrmUserMapper.toDomain(savedUser);
+    if (!updatedUser) {
+      return null;
+    }
+    
+    return TypeOrmUserMapper.toDomain(updatedUser);
+  }
+
+  async findByAuthServiceUserId(authServiceUserId: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: { auth_service_user_id: authServiceUserId }
+    });
+    
+    if (!user) {
+      return null;
+    }
+    
+    return TypeOrmUserMapper.toDomain(user);
   }
 }

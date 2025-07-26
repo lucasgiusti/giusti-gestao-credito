@@ -31,15 +31,15 @@ export class CreateUserUseCase {
             authenticatedUser.id
         );
 
-        const response = await this.userRepository.create(user);
+        const userCreated = await this.userRepository.create(user);
         
         await this.eventBus.publish(
             new UserCreatedEvent({
-                user: response,
+                user: userCreated,
                 authServiceUserId: authenticatedUser.id
             })
         );
         
-        return response;
+        return userCreated;
     }
 }

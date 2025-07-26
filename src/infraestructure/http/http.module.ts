@@ -10,6 +10,7 @@ import { UpdateSupabaseUserMetadataUseCase } from "src/application/use-cases/use
 import { SupabaseModule } from "../config/supabase.module";
 import { FindAllUsersUseCase } from "src/application/use-cases/user/find-all-users.use-case";
 import { UpdateUserUseCase } from "src/application/use-cases/user/update-user.use-case";
+import { FindUserByIdUseCase } from "src/application/use-cases/user/find-user-by-id.use-case";
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { UpdateUserUseCase } from "src/application/use-cases/user/update-user.us
         UpdateSupabaseUserMetadataUseCase,
         FindAllUsersUseCase,
         UpdateUserUseCase,
+        FindUserByIdUseCase,
     ],
     controllers: [
         CarteiraController,

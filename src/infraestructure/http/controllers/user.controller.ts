@@ -9,6 +9,7 @@ import { FindAllUsersUseCase } from 'src/application/use-cases/user/find-all-use
 import { UserResponseDto } from '../dtos/user/user-response.dto';
 import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
+import { FindUserByIdUseCase } from 'src/application/use-cases/user/find-user-by-id.use-case';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -18,6 +19,7 @@ export class UserController {
         private readonly createUserUseCase: CreateUserUseCase,
         private readonly findAllUsersUseCase: FindAllUsersUseCase,
         private readonly updateUserUseCase: UpdateUserUseCase,
+        private readonly findUserByIdUseCase: FindUserByIdUseCase,
     ) {}
 
     @Auth()
@@ -59,6 +61,18 @@ export class UserController {
             status: updateUserDto.status,
             userRole: updateUserDto.userRole,
         });
+        return UserResponseDto.fromEntity(user);
+    }
+
+    @Auth('MASTER', 'ADMIN')
+    @Get(':id')
+    @ApiOperation({ summary: 'Buscar um usuário por ID', description: 'Retorna um usuário com base no ID fornecido' })
+    @ApiResponse({ status: 200, description: 'Usuário encontrado com sucesso', type: UserResponseDto })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    @ApiResponse({ status: 403, description: 'Acesso proibido' })
+    async findById(@Param('id') id: number): Promise<UserResponseDto> {
+        const user = await this.findUserByIdUseCase.execute({ id });
         return UserResponseDto.fromEntity(user);
     }
 }

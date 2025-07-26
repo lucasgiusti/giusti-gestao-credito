@@ -1,5 +1,4 @@
 import { UnauthorizedException } from "@nestjs/common";
-import { AuthenticatedUser } from "./authenticated-user";
 
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
@@ -118,7 +117,7 @@ export class User {
         });
     }
 
-    updateData(updatedBy: AuthenticatedUser, name?: string, status?: UserStatus, userRole?: UserRole): void {
+    updateData(updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole): void {
         // Regra 1: Usuários USER não podem alterar usuários
         if (updatedBy.userRole === UserRole.USER) {
           throw new UnauthorizedException('unauthorized.user.cannot.update.user');

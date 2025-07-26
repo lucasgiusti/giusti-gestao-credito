@@ -26,9 +26,7 @@ export class TypeOrmUserMapper {
             email: user.email,
             user_role: user.userRole,
             status: user.status,
-            auth_service_user_id: user.authServiceUserId,
-            created_at: user.createdAt,
-            updated_at: user.updatedAt,
+            auth_service_user_id: user.authServiceUserId
         }
     }
 }
