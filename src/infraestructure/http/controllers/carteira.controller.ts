@@ -17,7 +17,7 @@ export class CarteiraController {
         private readonly findAllCarteirasUseCase: FindAllCarteirasUseCase,
     ) {}
 
-    @Auth()
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Post()
     @ApiOperation({ summary: 'Criar uma nova carteira', description: 'Cria uma nova carteira com os dados fornecidos' })
     @ApiResponse({ status: 201, description: 'Carteira criada com sucesso', type: CarteiraResponseDto })
@@ -28,7 +28,7 @@ export class CarteiraController {
         return CarteiraResponseDto.fromEntity(carteira);
     }
     
-    @Auth()
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Get()
     @ApiOperation({ summary: 'Listar todas as carteiras', description: 'Retorna uma lista com todas as carteiras cadastradas' })
     @ApiResponse({ status: 200, description: 'Lista de carteiras retornada com sucesso', type: [CarteiraResponseDto] })
