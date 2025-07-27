@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 import { User } from 'src/domain/entities/user';
@@ -22,14 +22,14 @@ export class CreateUserUseCase {
     }: CreateUserUseCaseCommand): Promise<User> {
         const userExists = await this.userRepository.findByEmail(authenticatedUser.email);
         if (userExists) {
-            throw new BadRequestException('invalid.user.already.exists');
+            throw new Error('invalid.user.already.exists');
         }
 
-        const user = User.createFromAuthUser(
-            authenticatedUser.email.split('@')[0],
-            authenticatedUser.email,
-            authenticatedUser.id
-        );
+        const user = User.createFromAuthUser({
+            name: authenticatedUser.email.split('@')[0],
+            email: authenticatedUser.email,
+            authServiceUserId: authenticatedUser.id
+        });
 
         const userCreated = await this.userRepository.create(user);
         

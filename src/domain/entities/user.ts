@@ -109,7 +109,7 @@ export class User {
     }
 
     // Factory method para criar um novo usuário a partir de um usuário autenticado
-    static createFromAuthUser(name: string, email: string, authServiceUserId: string): User {
+    static createFromAuthUser({ name, email, authServiceUserId }: { name: string, email: string, authServiceUserId: string }): User {
         return new User({
             name,
             email,
@@ -117,7 +117,7 @@ export class User {
         });
     }
 
-    update(updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole): void {
+    update({ updatedBy, name, status, userRole }: { updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole }): void {
       // Regra 1: Usuários USER não podem alterar usuários
       if (updatedBy.userRole === UserRole.USER) {
         throw new UnauthorizedException('unauthorized.user.cannot.update.user');
@@ -151,7 +151,7 @@ export class User {
       this._updatedAt = new Date();
     }
 
-    delete(updatedBy: User): void {
+    delete({ updatedBy }: { updatedBy: User }): void {
       if (updatedBy.userRole === UserRole.USER) {
         throw new UnauthorizedException('unauthorized.user.cannot.delete.user');
       }

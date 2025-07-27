@@ -5,8 +5,6 @@ import { CreateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/create
 import { CreateCarteiraUseCase } from 'src/application/use-cases/carteira/create-carteira.use-case';
 import { FindAllCarteirasUseCase } from 'src/application/use-cases/carteira/find-all-carteiras.use-case';
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
-import { Authenticated } from '../../decorators/authenticated.decorator';
-import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 import { UpdateCarteiraUseCase } from 'src/application/use-cases/carteira/update-carteira.use-case';
 import { UpdateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/update-carteira.dto';
 import { FindCarteiraByIdUseCase } from 'src/application/use-cases/carteira/find-carteira-by-id.use-case';
@@ -28,7 +26,7 @@ export class CarteiraController {
     @ApiResponse({ status: 201, description: 'Carteira criada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async create(@Authenticated() authenticatedUser: AuthenticatedUser, @Body() createCarteiraDto: CreateCarteiraDto): Promise<CarteiraResponseDto> {
+    async create(@Body() createCarteiraDto: CreateCarteiraDto): Promise<CarteiraResponseDto> {
         const carteira = await this.createCarteiraUseCase.execute({nome: createCarteiraDto.nome});
         return CarteiraResponseDto.fromEntity(carteira);
     }
@@ -38,7 +36,7 @@ export class CarteiraController {
     @ApiOperation({ summary: 'Listar todas as carteiras', description: 'Retorna uma lista com todas as carteiras cadastradas' })
     @ApiResponse({ status: 200, description: 'Lista de carteiras retornada com sucesso', type: [CarteiraResponseDto] })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async findAll(@Authenticated() authenticatedUser: AuthenticatedUser): Promise<CarteiraResponseDto[]> {
+    async findAll(): Promise<CarteiraResponseDto[]> {
         const carteiras = await this.findAllCarteirasUseCase.execute({});
         return CarteiraResponseDto.fromEntities(carteiras);
     }
@@ -49,7 +47,7 @@ export class CarteiraController {
     @ApiResponse({ status: 200, description: 'Carteira retornada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async findOne(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number): Promise<CarteiraResponseDto> {
+    async findOne(@Param('id') id: number): Promise<CarteiraResponseDto> {
         const carteira = await this.findCarteiraByIdUseCase.execute({id});
         return CarteiraResponseDto.fromEntity(carteira);
     }
@@ -60,8 +58,8 @@ export class CarteiraController {
     @ApiResponse({ status: 200, description: 'Carteira atualizada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
-        const carteira = await this.updateCarteiraUseCase.execute({authenticatedUser, id, nome: updateCarteiraDto.nome});
+    async update(@Param('id') id: number, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
+        const carteira = await this.updateCarteiraUseCase.execute({id, nome: updateCarteiraDto.nome});
         return CarteiraResponseDto.fromEntity(carteira);
     }
 }

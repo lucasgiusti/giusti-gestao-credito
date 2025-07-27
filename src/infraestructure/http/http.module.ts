@@ -15,6 +15,8 @@ import { DeleteSupabaseUserUseCase } from "src/application/use-cases/user/delete
 import { DeleteUserUseCase } from "src/application/use-cases/user/delete-user.use-case";
 import { UpdateCarteiraUseCase } from "src/application/use-cases/carteira/update-carteira.use-case";
 import { FindCarteiraByIdUseCase } from "src/application/use-cases/carteira/find-carteira-by-id.use-case";
+import { CreateCedenteUseCase } from "src/application/use-cases/cedente/create-cedente.use-case";
+import { CedenteController } from "./controllers/cedente.controller";
 
 @Module({
     imports: [
@@ -34,10 +36,12 @@ import { FindCarteiraByIdUseCase } from "src/application/use-cases/carteira/find
         UpdateCarteiraUseCase,
         UpdateSupabaseUserUseCase,
         DeleteSupabaseUserUseCase,
+        CreateCedenteUseCase,
     ],
     controllers: [
         CarteiraController,
         UserController,
+        CedenteController,
     ],
 })
 export class HttpModule {}

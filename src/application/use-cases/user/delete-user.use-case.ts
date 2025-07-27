@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
@@ -23,12 +23,12 @@ export class DeleteUserUseCase {
     }: DeleteUserUseCaseCommand): Promise<void> {
         const user = await this.userRepository.findById(id);
         if (!user) {
-            throw new BadRequestException('invalid.user.not.found');
+            throw new Error('invalid.user.not.found');
         }
 
         const updatedBy = await this.userRepository.findByAuthServiceUserId(authenticatedUser.id);
 
-        user.delete(updatedBy);
+        user.delete({ updatedBy });
 
         await this.userRepository.update(id, user);
         

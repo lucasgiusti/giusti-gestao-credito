@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 import { User } from 'src/domain/entities/user';
@@ -31,12 +31,12 @@ export class UpdateUserUseCase {
     }: UpdateUserUseCaseCommand): Promise<User> {
         const user = await this.userRepository.findById(id);
         if (!user) {
-            throw new BadRequestException('invalid.user.not.found');
+            throw new Error('invalid.user.not.found');
         }
 
         const updatedBy = await this.userRepository.findByAuthServiceUserId(authenticatedUser.id);
 
-        user.update(updatedBy, name, status, userRole);
+        user.update({ updatedBy, name, status, userRole });
 
         const userUpdated = await this.userRepository.update(id, user);
         

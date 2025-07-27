@@ -7,6 +7,9 @@ import { TypeOrmCarteiraRepository } from "./repositories/typeorm-carteira.repos
 import { IUserRepository } from "src/application/interfaces/repositories/user.repository.interface";
 import { TypeOrmUserRepository } from "./repositories/typeorm-user.repository";
 import { User } from "./entities/user.entity";
+import { Cedente } from "./entities/cedente.entity";
+import { ICedenteRepository } from "src/application/interfaces/repositories/cedente.repository.interface";
+import { TypeOrmCedenteRepository } from "./repositories/typeorm-cedente.repository";
 
 @Module({
   imports: [
@@ -22,14 +25,14 @@ import { User } from "./entities/user.entity";
           username: configService.get<string>('POSTGRES_USER', 'postgres'),
           password: configService.get<string>('POSTGRES_PASSWORD', 'postgres'),
           database: configService.get<string>('POSTGRES_DB', 'giusti-gestao-credito'),
-          entities: [Carteira, User],
+          entities: [Carteira, User, Cedente],
           synchronize: false,
           logging: configService.get<boolean>('TYPEORM_LOGGING', false),
         };
       },
       inject: [ConfigService],
     }),
-    TypeOrmModuleLib.forFeature([Carteira, User]),
+    TypeOrmModuleLib.forFeature([Carteira, User, Cedente]),
   ],
   providers: [
     {
@@ -40,10 +43,15 @@ import { User } from "./entities/user.entity";
       provide: IUserRepository,
       useClass: TypeOrmUserRepository,
     },
+    {
+      provide: ICedenteRepository,
+      useClass: TypeOrmCedenteRepository,
+    },
   ],
   exports: [
     ICarteiraRepository,
     IUserRepository,
+    ICedenteRepository,
   ],
 })
 export class TypeOrmModule {}

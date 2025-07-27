@@ -15,6 +15,11 @@ export class FindCarteiraByIdUseCase {
 
     async execute({id}: FindCarteiraByIdUseCaseCommand): Promise<Carteira> {
         const carteira = await this.carteiraRepository.findById(id);
+
+        if (!carteira) {
+            throw new Error('invalid.carteira.not.found');
+        }
+
         return carteira;
     }
 }

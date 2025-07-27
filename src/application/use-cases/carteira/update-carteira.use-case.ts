@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Carteira } from 'src/domain/entities/carteira';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 
@@ -20,10 +20,10 @@ export class UpdateCarteiraUseCase {
     }: UpdateCarteiraUseCaseCommand): Promise<Carteira> {
         const carteira = await this.carteiraRepository.findById(id);
         if (!carteira) {
-            throw new BadRequestException('invalid.carteira.not.found');
+            throw new Error('invalid.carteira.not.found');
         }
 
-        carteira.update(nome);
+        carteira.update({ nome });
 
         const carteiraUpdated = await this.carteiraRepository.update(id, carteira);
         
