@@ -45,7 +45,10 @@ export class Cedente {
     }
 
     // Métodos de domínio
-    update({ nome, documento }: { nome?: string, documento?: string | Documento }): void {
+    update({ nome, documento, cedenteExists }: { nome?: string, documento?: string | Documento, cedenteExists?: Cedente | null }): void {
+        if (cedenteExists && cedenteExists.id !== this.id) {
+            throw new Error('invalid.cedente.documento.exists');
+        }
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
             this._nome = nome;
         }
@@ -61,8 +64,19 @@ export class Cedente {
         this._updatedAt = new Date();
     }
 
+    canBeDeleted(): boolean {
+        // TODO: Implementar lógica de exclusão
+        // Deverá ser verificado se o cedente possui algum processo associado
+        // Se houver, deve ser lançada uma exceção
+        return true;
+    }
+
     // Factory method para criar um novo cedente
-    static create({nome, documento}: {nome: string, documento: string | Documento}): Cedente {
+    static create({nome, documento, cedenteExists}: {nome: string, documento: string | Documento, cedenteExists?: Cedente | null}): Cedente {
+
+        if (cedenteExists) {
+            throw new Error('invalid.cedente.documento.exists');
+        }
         const documentoObj = typeof documento === 'string' 
             ? DocumentoFactory.create(documento) 
             : documento;

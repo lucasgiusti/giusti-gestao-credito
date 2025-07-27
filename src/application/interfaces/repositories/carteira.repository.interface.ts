@@ -5,4 +5,5 @@ export abstract class ICarteiraRepository {
     abstract findById(id: number): Promise<Carteira | null>
     abstract findAll(): Promise<Carteira[]>
     abstract update(id: number, carteira: Carteira): Promise<Carteira | null>
+    abstract delete(id: number): Promise<void>
 }

@@ -65,4 +65,8 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     
     return TypeOrmCedenteMapper.toDomain(cedente);
   }
+
+  async delete(id: number): Promise<void> {
+    await this.cedenteRepository.delete(id);
+  }
 }

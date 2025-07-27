@@ -52,5 +52,9 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
       }
       
       return TypeOrmCarteiraMapper.toDomain(updatedCarteira);
-    }
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.carteiraRepository.delete(id);
+  }
 }

@@ -17,6 +17,12 @@ import { UpdateCarteiraUseCase } from "src/application/use-cases/carteira/update
 import { FindCarteiraByIdUseCase } from "src/application/use-cases/carteira/find-carteira-by-id.use-case";
 import { CreateCedenteUseCase } from "src/application/use-cases/cedente/create-cedente.use-case";
 import { CedenteController } from "./controllers/cedente.controller";
+import { FindAllCedentesUseCase } from "src/application/use-cases/cedente/find-all-cedentes.use-case";
+import { FindCedenteByIdUseCase } from "src/application/use-cases/cedente/find-cedente-by-id.use-case";
+import { FindCedenteByDocumentoUseCase } from "src/application/use-cases/cedente/find-cedente-by-documento.use-case";
+import { UpdateCedenteUseCase } from "src/application/use-cases/cedente/update-cedente.use-case";
+import { DeleteCedenteUseCase } from "src/application/use-cases/cedente/delete-cedente.use-case";
+import { DeleteCarteiraUseCase } from "src/application/use-cases/carteira/delete-carteira.use-case";
 
 @Module({
     imports: [
@@ -34,9 +40,15 @@ import { CedenteController } from "./controllers/cedente.controller";
         FindAllCarteirasUseCase,
         FindCarteiraByIdUseCase,
         UpdateCarteiraUseCase,
+        DeleteCarteiraUseCase,
         UpdateSupabaseUserUseCase,
         DeleteSupabaseUserUseCase,
         CreateCedenteUseCase,
+        FindAllCedentesUseCase,
+        FindCedenteByIdUseCase,
+        FindCedenteByDocumentoUseCase,
+        UpdateCedenteUseCase,
+        DeleteCedenteUseCase,
     ],
     controllers: [
         CarteiraController,

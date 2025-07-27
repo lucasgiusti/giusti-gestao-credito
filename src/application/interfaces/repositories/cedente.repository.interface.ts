@@ -6,4 +6,5 @@ export abstract class ICedenteRepository {
   abstract findByDocumento(documento: string): Promise<Cedente | null>;
   abstract findAll(): Promise<Cedente[]>;
   abstract update(id: number, cedente: Cedente): Promise<Cedente | null>;
+  abstract delete(id: number): Promise<void>;
 }

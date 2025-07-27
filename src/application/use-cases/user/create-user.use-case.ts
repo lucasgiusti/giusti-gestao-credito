@@ -21,14 +21,12 @@ export class CreateUserUseCase {
         authenticatedUser,
     }: CreateUserUseCaseCommand): Promise<User> {
         const userExists = await this.userRepository.findByEmail(authenticatedUser.email);
-        if (userExists) {
-            throw new Error('invalid.user.already.exists');
-        }
 
         const user = User.createFromAuthUser({
             name: authenticatedUser.email.split('@')[0],
             email: authenticatedUser.email,
-            authServiceUserId: authenticatedUser.id
+            authServiceUserId: authenticatedUser.id,
+            userExists
         });
 
         const userCreated = await this.userRepository.create(user);

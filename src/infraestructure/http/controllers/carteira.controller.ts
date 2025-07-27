@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CarteiraResponseDto } from '../dtos/carteira/carteira-response.dto';
 import { CreateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/create-carteira.dto';
@@ -8,6 +8,7 @@ import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 import { UpdateCarteiraUseCase } from 'src/application/use-cases/carteira/update-carteira.use-case';
 import { UpdateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/update-carteira.dto';
 import { FindCarteiraByIdUseCase } from 'src/application/use-cases/carteira/find-carteira-by-id.use-case';
+import { DeleteCarteiraUseCase } from 'src/application/use-cases/carteira/delete-carteira.use-case';
 
 @ApiTags('v1/carteiras')
 @Controller('v1/carteiras')
@@ -18,6 +19,7 @@ export class CarteiraController {
         private readonly findAllCarteirasUseCase: FindAllCarteirasUseCase,
         private readonly findCarteiraByIdUseCase: FindCarteiraByIdUseCase,
         private readonly updateCarteiraUseCase: UpdateCarteiraUseCase,
+        private readonly deleteCarteiraUseCase: DeleteCarteiraUseCase,
     ) {}
 
     @Auth('MASTER', 'ADMIN', 'USER')
@@ -61,5 +63,15 @@ export class CarteiraController {
     async update(@Param('id') id: number, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
         const carteira = await this.updateCarteiraUseCase.execute({id, nome: updateCarteiraDto.nome});
         return CarteiraResponseDto.fromEntity(carteira);
+    }
+
+    @Auth('MASTER', 'ADMIN', 'USER')
+    @Delete(':id')
+    @ApiOperation({ summary: 'Deletar uma carteira', description: 'Deleta uma carteira com os dados fornecidos' })
+    @ApiResponse({ status: 204, description: 'Carteira deletada com sucesso' })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    @ApiResponse({ status: 401, description: 'Não autorizado' })
+    async delete(@Param('id') id: number): Promise<void> {
+        await this.deleteCarteiraUseCase.execute({id});
     }
 }

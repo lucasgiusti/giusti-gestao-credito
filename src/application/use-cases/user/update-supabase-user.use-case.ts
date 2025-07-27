@@ -30,7 +30,7 @@ export class UpdateSupabaseUserUseCase {
 
   private async updateUser(user: User, authServiceUserId: string): Promise<void> {
     try {
-      const { data, error } = await this.supabaseService.getClient().auth.admin.updateUserById(
+      const { data, error } = await this.supabaseService.getClient().auth.admin.deleteUser(
         authServiceUserId,
         {
           user_metadata: { 

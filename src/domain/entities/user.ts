@@ -109,7 +109,10 @@ export class User {
     }
 
     // Factory method para criar um novo usuário a partir de um usuário autenticado
-    static createFromAuthUser({ name, email, authServiceUserId }: { name: string, email: string, authServiceUserId: string }): User {
+    static createFromAuthUser({ name, email, authServiceUserId, userExists }: { name: string, email: string, authServiceUserId: string, userExists?: User | null }): User {
+      if (userExists) {
+        throw new Error('invalid.user.already.exists');
+      }
         return new User({
             name,
             email,
