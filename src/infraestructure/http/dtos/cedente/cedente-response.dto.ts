@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Cedente } from 'src/domain/entities/cedente';
-import { Documento } from 'src/domain/value-objects/documento';
+import { DocumentoTipo } from 'src/domain/value-objects/documento';
 
 export class CedenteResponseDto {
   @ApiProperty({ description: 'ID do cedente' })
@@ -9,8 +9,14 @@ export class CedenteResponseDto {
   @ApiProperty({ description: 'Nome do cedente' })
   nome: string;
 
-  @ApiProperty({ description: 'Documento do cedente' })
-  documento: Documento;
+  @ApiProperty({ description: 'Documento do cedente (sem formatação)' })
+  documento: string;
+
+  @ApiProperty({ description: 'Documento do cedente (formatado)', example: '123.456.789-00' })
+  documentoFormatado: string;
+
+  @ApiProperty({ description: 'Tipo do documento', enum: DocumentoTipo, example: 'CPF' })
+  tipoDocumento: DocumentoTipo;
 
   @ApiProperty({ description: 'Data de criação do registro' })
   createdAt: Date;
@@ -21,7 +27,9 @@ export class CedenteResponseDto {
   constructor(cedente: Cedente) {
     this.id = cedente.id;
     this.nome = cedente.nome;
-    this.documento = cedente.documento;
+    this.documento = cedente.documento.value;
+    this.documentoFormatado = cedente.documento.format();
+    this.tipoDocumento = cedente.documento.type;
     this.createdAt = cedente.createdAt;
     this.updatedAt = cedente.updatedAt;
   }
