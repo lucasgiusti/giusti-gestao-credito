@@ -22,7 +22,7 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     return TypeOrmCedenteMapper.toDomain(savedCedente);
   }
 
-  async findById(id: number): Promise<Cedente | null> {
+  async findById(id: string): Promise<Cedente | null> {
     const cedente = await this.cedenteRepository.findOne({
       where: { id }
     });
@@ -40,7 +40,7 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     return cedentes.map(cedente => TypeOrmCedenteMapper.toDomain(cedente));
   }
 
-  async update(id: number, cedente: Cedente): Promise<Cedente | null> {
+  async update(id: string, cedente: Cedente): Promise<Cedente | null> {
     const data = TypeOrmCedenteMapper.toTypeOrm(cedente);
     
     await this.cedenteRepository.update(id, data);
@@ -66,7 +66,7 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     return TypeOrmCedenteMapper.toDomain(cedente);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.cedenteRepository.delete(id);
   }
 }

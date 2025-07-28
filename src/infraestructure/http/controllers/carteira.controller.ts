@@ -49,7 +49,7 @@ export class CarteiraController {
     @ApiResponse({ status: 200, description: 'Carteira retornada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async findOne(@Param('id') id: number): Promise<CarteiraResponseDto> {
+    async findOne(@Param('id') id: string): Promise<CarteiraResponseDto> {
         const carteira = await this.findCarteiraByIdUseCase.execute({id});
         return CarteiraResponseDto.fromEntity(carteira);
     }
@@ -60,7 +60,7 @@ export class CarteiraController {
     @ApiResponse({ status: 200, description: 'Carteira atualizada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async update(@Param('id') id: number, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
+    async update(@Param('id') id: string, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
         const carteira = await this.updateCarteiraUseCase.execute({id, nome: updateCarteiraDto.nome});
         return CarteiraResponseDto.fromEntity(carteira);
     }
@@ -71,7 +71,7 @@ export class CarteiraController {
     @ApiResponse({ status: 204, description: 'Carteira deletada com sucesso' })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async delete(@Param('id') id: number): Promise<void> {
+    async delete(@Param('id') id: string): Promise<void> {
         await this.deleteCarteiraUseCase.execute({id});
     }
 }

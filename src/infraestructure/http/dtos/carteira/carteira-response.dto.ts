@@ -3,7 +3,7 @@ import { Carteira } from 'src/domain/entities/carteira';
 
 export class CarteiraResponseDto {
   @ApiProperty({ description: 'ID da carteira' })
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'Nome da carteira' })
   nome: string;

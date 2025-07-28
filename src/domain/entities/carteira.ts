@@ -2,13 +2,13 @@ import { UnauthorizedException } from "@nestjs/common";
 import { User, UserRole } from "./user";
 
 type CarteiraProps = {
-    id?: number;
+    id?: string;
     nome: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 export class Carteira {
-    private _id?: number;
+    private _id?: string;
     private _nome: string;
     private _createdAt?: Date;
     private _updatedAt?: Date;
@@ -22,7 +22,7 @@ export class Carteira {
     }
 
     // Getters
-    get id(): number | undefined {
+    get id(): string | undefined {
         return this._id;
     }
 

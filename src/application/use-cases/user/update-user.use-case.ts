@@ -8,7 +8,7 @@ import { UserUpdatedEvent } from 'src/domain/events/user-updated.event';
 
 interface UpdateUserUseCaseCommand {
     authenticatedUser: AuthenticatedUser,
-    id: number,
+    id: string,
     name?: string,
     status?: UserStatus,
     userRole?: UserRole,

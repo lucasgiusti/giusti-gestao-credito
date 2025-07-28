@@ -55,7 +55,7 @@ export class UserController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
-    async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+    async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         const user = await this.updateUserUseCase.execute({
             authenticatedUser,
             id,
@@ -73,7 +73,7 @@ export class UserController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
-    async findById(@Param('id') id: number): Promise<UserResponseDto> {
+    async findById(@Param('id') id: string): Promise<UserResponseDto> {
         const user = await this.findUserByIdUseCase.execute({ id });
         return UserResponseDto.fromEntity(user);
     }
@@ -85,7 +85,7 @@ export class UserController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
-    async delete(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: number): Promise<void> {
+    async delete(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: string): Promise<void> {
         await this.deleteUserUseCase.execute({ authenticatedUser, id });
     }
 }

@@ -1,7 +1,7 @@
 import { Documento, DocumentoFactory } from '../value-objects/documento';
 
 type CedenteProps = {
-    id?: number;
+    id?: string;
     nome: string;
     documento: Documento;
     createdAt?: Date;
@@ -9,7 +9,7 @@ type CedenteProps = {
 }
 
 export class Cedente {
-    private _id?: number;
+    private _id?: string;
     private _nome: string;
     private _documento: Documento;
     private _createdAt?: Date;
@@ -24,7 +24,7 @@ export class Cedente {
     }
 
     // Getters
-    get id(): number | undefined {
+    get id(): string | undefined {
         return this._id;
     }
 

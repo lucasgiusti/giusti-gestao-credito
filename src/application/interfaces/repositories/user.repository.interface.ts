@@ -2,9 +2,9 @@ import { User } from "src/domain/entities/user";
 
 export abstract class IUserRepository {
     abstract create(user: User): Promise<User>
-    abstract findById(id: number): Promise<User | null>
+    abstract findById(id: string): Promise<User | null>
     abstract findByEmail(email: string): Promise<User | null>
     abstract findByAuthServiceUserId(authServiceUserId: string): Promise<User | null>
     abstract findAll(): Promise<User[]>
-    abstract update(id: number, user: User): Promise<User | null>
+    abstract update(id: string, user: User): Promise<User | null>
 }

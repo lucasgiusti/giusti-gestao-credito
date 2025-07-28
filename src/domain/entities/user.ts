@@ -12,7 +12,7 @@ export enum UserRole {
 }
 
 type UserProps = {
-    id?: number;
+    id?: string;
     name: string;
     email: string;
     userRole?: UserRole;
@@ -24,7 +24,7 @@ type UserProps = {
 }
 
 export class User {
-    private _id?: number;
+    private _id?: string;
     private _name: string;
     private _email: string;
     private _userRole: UserRole;
@@ -47,7 +47,7 @@ export class User {
     }
 
     // Getters
-    get id(): number | undefined {
+    get id(): string | undefined {
         return this._id;
     }
 

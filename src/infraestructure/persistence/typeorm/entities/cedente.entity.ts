@@ -4,8 +4,8 @@ import { DocumentoTipo } from '../../../../domain/value-objects/documento';
 @Entity('cedentes')
 @Index('IDX_CEDENTES_DOCUMENTO', ['documento'], { unique: true })
 export class Cedente {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 100 })
   nome: string;

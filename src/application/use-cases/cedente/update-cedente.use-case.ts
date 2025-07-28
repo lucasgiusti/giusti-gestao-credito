@@ -3,7 +3,7 @@ import { Cedente } from 'src/domain/entities/cedente';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
 
 interface UpdateCedenteUseCaseCommand {
-    id: number,
+    id: string,
     nome: string,
     documento: string,
 }

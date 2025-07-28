@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
 
 interface DeleteCedenteUseCaseCommand {
-    id: number,
+    id: string,
 }
 
 @Injectable()

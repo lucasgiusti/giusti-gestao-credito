@@ -3,7 +3,7 @@ import { ICarteiraRepository } from 'src/application/interfaces/repositories/car
 import { Carteira } from 'src/domain/entities/carteira';
 
 interface FindCarteiraByIdUseCaseCommand {
-    id: number;
+    id: string;
 }
 
 @Injectable()

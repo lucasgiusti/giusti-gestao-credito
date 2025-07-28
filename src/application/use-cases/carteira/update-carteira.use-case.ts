@@ -3,7 +3,7 @@ import { Carteira } from 'src/domain/entities/carteira';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 
 interface UpdateCarteiraUseCaseCommand {
-    id: number,
+    id: string,
     nome: string,
 }
 

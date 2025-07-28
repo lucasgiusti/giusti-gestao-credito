@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 
 interface DeleteCarteiraUseCaseCommand {
-    id: number,
+    id: string,
 }
 
 @Injectable()

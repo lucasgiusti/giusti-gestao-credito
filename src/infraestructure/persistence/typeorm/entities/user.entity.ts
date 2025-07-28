@@ -4,8 +4,8 @@ import { UserRole, UserStatus } from '../../../../domain/entities/user';
 @Entity('users')
 @Index('IDX_USERS_EMAIL_DELETED_AT', ['email', 'deleted_at'], { unique: true })
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 100 })
   name: string;

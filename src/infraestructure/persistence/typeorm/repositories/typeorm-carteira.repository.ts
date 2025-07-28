@@ -22,7 +22,7 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
     return TypeOrmCarteiraMapper.toDomain(savedCarteira);
   }
 
-  async findById(id: number): Promise<Carteira | null> {
+  async findById(id: string): Promise<Carteira | null> {
     const carteira = await this.carteiraRepository.findOne({
       where: { id }
     });
@@ -40,7 +40,7 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
     return carteiras.map(carteira => TypeOrmCarteiraMapper.toDomain(carteira));
   }
 
-  async update(id: number, carteira: Carteira): Promise<Carteira | null> {
+  async update(id: string, carteira: Carteira): Promise<Carteira | null> {
       const data = TypeOrmCarteiraMapper.toTypeOrm(carteira);
       
       await this.carteiraRepository.update(id, data);
@@ -54,7 +54,7 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
       return TypeOrmCarteiraMapper.toDomain(updatedCarteira);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.carteiraRepository.delete(id);
   }
 }

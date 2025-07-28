@@ -3,7 +3,7 @@ import { User, UserRole, UserStatus } from 'src/domain/entities/user';
 
 export class UserResponseDto {
   @ApiProperty({ description: 'ID do usuário' })
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'Nome do usuário' })
   name: string;

@@ -3,7 +3,7 @@ import { ICedenteRepository } from 'src/application/interfaces/repositories/cede
 import { Cedente } from 'src/domain/entities/cedente';
 
 interface FindCedenteByIdUseCaseCommand {
-    id: number;
+    id: string;
 }
 
 @Injectable()

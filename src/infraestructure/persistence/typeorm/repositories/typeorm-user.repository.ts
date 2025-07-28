@@ -22,7 +22,7 @@ export class TypeOrmUserRepository implements IUserRepository {
     return TypeOrmUserMapper.toDomain(savedUser);
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.userRepository.findOne({
       where: { id, deleted_at: null }
     });
@@ -52,7 +52,7 @@ export class TypeOrmUserRepository implements IUserRepository {
     return users.map(user => TypeOrmUserMapper.toDomain(user));
   }
 
-  async update(id: number, user: User): Promise<User | null> {
+  async update(id: string, user: User): Promise<User | null> {
     const data = TypeOrmUserMapper.toTypeOrm(user);
     
     await this.userRepository.update(id, data);

@@ -4,7 +4,7 @@ import { DocumentoTipo } from 'src/domain/value-objects/documento';
 
 export class CedenteResponseDto {
   @ApiProperty({ description: 'ID do cedente' })
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'Nome do cedente' })
   nome: string;

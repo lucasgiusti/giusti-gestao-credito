@@ -52,7 +52,7 @@ export class CedenteController {
     @ApiResponse({ status: 200, description: 'Cedente encontrado com sucesso', type: CedenteResponseDto })
     @ApiResponse({ status: 404, description: 'Cedente não encontrado' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async findById(@Param('id') id: number): Promise<CedenteResponseDto> {
+    async findById(@Param('id') id: string): Promise<CedenteResponseDto> {
         const cedente = await this.findByIdCedenteUseCase.execute({id});
         return CedenteResponseDto.fromEntity(cedente);
     }
@@ -74,7 +74,7 @@ export class CedenteController {
     @ApiResponse({ status: 200, description: 'Cedente atualizado com sucesso', type: CedenteResponseDto })
     @ApiResponse({ status: 404, description: 'Cedente não encontrado' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async update(@Param('id') id: number, @Body() updateCedenteDto: UpdateCedenteDto): Promise<CedenteResponseDto> {
+    async update(@Param('id') id: string, @Body() updateCedenteDto: UpdateCedenteDto): Promise<CedenteResponseDto> {
         const cedente = await this.updateCedenteUseCase.execute({id, ...updateCedenteDto});
         return CedenteResponseDto.fromEntity(cedente);
     }
@@ -85,7 +85,7 @@ export class CedenteController {
     @ApiResponse({ status: 204, description: 'Cedente deletado com sucesso' })
     @ApiResponse({ status: 404, description: 'Cedente não encontrado' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async delete(@Param('id') id: number): Promise<void> {
+    async delete(@Param('id') id: string): Promise<void> {
         await this.deleteCedenteUseCase.execute({id});
     }
 }

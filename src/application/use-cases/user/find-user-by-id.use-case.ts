@@ -3,7 +3,7 @@ import { IUserRepository } from 'src/application/interfaces/repositories/user.re
 import { User } from 'src/domain/entities/user';
 
 interface FindUserByIdUseCaseCommand {
-    id: number,
+    id: string,
 }
 
 @Injectable()

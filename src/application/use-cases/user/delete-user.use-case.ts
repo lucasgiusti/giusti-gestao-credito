@@ -6,7 +6,7 @@ import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 
 interface DeleteUserUseCaseCommand {
     authenticatedUser: AuthenticatedUser,
-    id: number,
+    id: string,
 }
 
 @Injectable()
