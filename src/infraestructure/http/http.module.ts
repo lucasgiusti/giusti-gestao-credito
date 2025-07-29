@@ -35,6 +35,7 @@ import { FindCedenteByDocumentoUseCase } from "src/application/use-cases/cedente
 import { UpdateCedenteUseCase } from "src/application/use-cases/cedente/update-cedente.use-case";
 import { DeleteCedenteUseCase } from "src/application/use-cases/cedente/delete-cedente.use-case";
 import { DeleteCarteiraUseCase } from "src/application/use-cases/carteira/delete-carteira.use-case";
+import { FindAllPartesProcessoUseCase } from "src/application/use-cases/parte-processo/find-all-partes-processo.use-case";
 
 @Module({
     imports: [
@@ -69,6 +70,7 @@ import { DeleteCarteiraUseCase } from "src/application/use-cases/carteira/delete
         CreateParteProcessoUseCase,
         FindParteProcessoByIdUseCase,
         FindPartesByProcessoIdUseCase,
+        FindAllPartesProcessoUseCase,
         UpdateParteProcessoUseCase,
         DeleteParteProcessoUseCase,
     ],

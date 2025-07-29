@@ -39,7 +39,7 @@ export class ProcessoController {
     @ApiOperation({ summary: 'Listar todos os processos' })
     @ApiResponse({ status: 200, description: 'Lista de processos', type: [ProcessoResponseDto] })
     async findAll(): Promise<ProcessoResponseDto[]> {
-        const processos = await this.findAllProcessosUseCase.execute();
+        const processos = await this.findAllProcessosUseCase.execute({});
         return ProcessoResponseDto.fromEntities(processos);
     }
 
@@ -47,7 +47,7 @@ export class ProcessoController {
     @ApiOperation({ summary: 'Buscar um processo pelo ID' })
     @ApiResponse({ status: 200, description: 'Processo encontrado', type: ProcessoResponseDto })
     async findById(@Param('id') id: string): Promise<ProcessoResponseDto> {
-        const processo = await this.findProcessoByIdUseCase.execute(id);
+        const processo = await this.findProcessoByIdUseCase.execute({ id });
 
         return ProcessoResponseDto.fromEntity(processo);
     }
@@ -75,6 +75,6 @@ export class ProcessoController {
     @ApiOperation({ summary: 'Excluir um processo' })
     @ApiResponse({ status: 204, description: 'Processo excluído' })
     async delete(@Param('id') id: string): Promise<void> {
-        await this.deleteProcessoUseCase.execute(id);
+        await this.deleteProcessoUseCase.execute({ id });
     }
 }

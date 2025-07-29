@@ -40,7 +40,7 @@ export class CreateParteProcessoUseCase {
             processoId,
             cedenteId,
             percentual,
-            processo,
+            valorHomologado: processo.valorHomologado,
             parteProcessoExists: parteExists
         });
 

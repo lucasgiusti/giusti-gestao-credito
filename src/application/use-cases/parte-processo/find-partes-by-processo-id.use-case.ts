@@ -3,6 +3,9 @@ import { ParteProcesso } from 'src/domain/entities/parte-processo';
 import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
 
+interface FindPartesByProcessoIdUseCaseCommand {
+    processoId: string;
+}
 @Injectable()
 export class FindPartesByProcessoIdUseCase {
 
@@ -11,7 +14,9 @@ export class FindPartesByProcessoIdUseCase {
         private processoRepository: IProcessoRepository
     ) {}
 
-    async execute(processoId: string): Promise<ParteProcesso[]> {
+    async execute({
+        processoId
+    }: FindPartesByProcessoIdUseCaseCommand): Promise<ParteProcesso[]> {
         const processo = await this.processoRepository.findById(processoId);
         if (!processo) {
             throw new Error('notfound.processo');

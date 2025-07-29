@@ -25,7 +25,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findById(id: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
       where: { id },
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     if (!parteProcesso) {
@@ -38,7 +38,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findByProcessoId(processoId: string): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
       where: { processo_id: processoId },
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     return partesProcesso.map(parteProcesso => TypeOrmParteProcessoMapper.toDomain(parteProcesso));
@@ -47,7 +47,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findByCedenteId(cedenteId: string): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
       where: { cedente_id: cedenteId },
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     return partesProcesso.map(parteProcesso => TypeOrmParteProcessoMapper.toDomain(parteProcesso));
@@ -55,7 +55,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findAll(): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     return partesProcesso.map(parteProcesso => TypeOrmParteProcessoMapper.toDomain(parteProcesso));
@@ -68,7 +68,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
     const updatedParteProcesso = await this.parteProcessoRepository.findOne({ 
       where: { id },
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     if (!updatedParteProcesso) {
@@ -89,7 +89,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findByProcessoIdAndCedenteId(processoId: string, cedenteId: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
       where: { processo_id: processoId, cedente_id: cedenteId },
-      relations: ['cedente']
+      relations: ['cedente', 'processo']
     });
     
     if (!parteProcesso) {
