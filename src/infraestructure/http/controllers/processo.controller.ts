@@ -9,8 +9,8 @@ import { FindProcessoByIdUseCase } from 'src/application/use-cases/processo/find
 import { UpdateProcessoUseCase } from 'src/application/use-cases/processo/update-processo.use-case';
 import { DeleteProcessoUseCase } from 'src/application/use-cases/processo/delete-processo.use-case';
 
-@ApiTags('processos')
-@Controller('processos')
+@ApiTags('v1/processos')
+@Controller('v1/processos')
 export class ProcessoController {
     constructor(
         private readonly createProcessoUseCase: CreateProcessoUseCase,

@@ -9,8 +9,8 @@ import { FindPartesByProcessoIdUseCase } from 'src/application/use-cases/parte-p
 import { UpdateParteProcessoUseCase } from 'src/application/use-cases/parte-processo/update-parte-processo.use-case';
 import { DeleteParteProcessoUseCase } from 'src/application/use-cases/parte-processo/delete-parte-processo.use-case';
 
-@ApiTags('partes-processo')
-@Controller('partes-processo')
+@ApiTags('v1/partes-processo')
+@Controller('v1/partes-processo')
 export class ParteProcessoController {
     constructor(
         private readonly createParteProcessoUseCase: CreateParteProcessoUseCase,
