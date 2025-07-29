@@ -16,11 +16,11 @@ export class CreateCarteiraUseCase {
     async execute({
         nome,
     }: CreateCarteiraUseCaseCommand): Promise<Carteira> {
-        const carteira = new Carteira({
+        const carteira = Carteira.create({
             nome,
         });
 
-        const response = await this.carteiraRepository.create(carteira);
-        return response;
+        const carteiraCreated = await this.carteiraRepository.create(carteira);
+        return carteiraCreated;
     }
 }
