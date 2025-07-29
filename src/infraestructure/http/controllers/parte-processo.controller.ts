@@ -27,7 +27,6 @@ export class ParteProcessoController {
         const parteProcesso = await this.createParteProcessoUseCase.execute({
             processoId: createParteProcessoDto.processoId,
             cedenteId: createParteProcessoDto.cedenteId,
-            valor: createParteProcessoDto.valor,
             percentual: createParteProcessoDto.percentual
         });
 

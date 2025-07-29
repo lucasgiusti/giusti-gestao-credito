@@ -12,11 +12,6 @@ export class CreateParteProcessoDto {
     @IsUUID('4', { message: 'O ID do cedente deve ser um UUID válido' })
     cedenteId: string;
 
-    @ApiProperty({ example: 5000.00 })
-    @IsNotEmpty({ message: 'O valor é obrigatório' })
-    @IsNumber({}, { message: 'O valor deve ser um número' })
-    valor: number;
-
     @ApiProperty({ example: 0.5 })
     @IsNotEmpty({ message: 'O percentual é obrigatório' })
     @IsNumber({}, { message: 'O percentual deve ser um número' })

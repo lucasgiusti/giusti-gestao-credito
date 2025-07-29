@@ -10,8 +10,8 @@ export class TypeOrmParteProcessoMapper {
             id: entity.id,
             processoId: entity.processo_id,
             cedenteId: entity.cedente_id,
-            valor: entity.valor,
-            percentual: entity.percentual,
+            valor: typeof entity.valor === 'string' ? parseFloat(entity.valor) : entity.valor,
+            percentual: typeof entity.percentual === 'string' ? parseFloat(entity.percentual) : entity.percentual,
             createdAt: entity.created_at,
             updatedAt: entity.updated_at,
         });

@@ -99,6 +99,7 @@ export class ParteProcesso {
         // TODO: Implementar lógica de exclusão
         // Deverá ser verificado se o processo possui algum registro (partes, documentos, etc) associado
         // Se houver, deve ser lançada uma exceção
+        // Uma parte de processo que já foi compara não pode ser excluida
         return true;
     }
 }

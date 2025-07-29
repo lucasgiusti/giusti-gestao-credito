@@ -50,7 +50,9 @@ export class UpdateParteProcessoUseCase {
             processo,
             parteProcessoExists
         });
-        
+
+        processo.updateParteProcesso(parteProcesso);
+        processo.validatePartes();
         
         return await this.parteProcessoRepository.update(id, parteProcesso);
     }
