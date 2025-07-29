@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Post, Get, Delete, Put, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateCedenteUseCase } from 'src/application/use-cases/cedente/create-cedente.use-case';
 import { CedenteResponseDto } from 'src/infraestructure/http/dtos/cedente/cedente-response.dto';

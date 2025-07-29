@@ -92,10 +92,19 @@ export class Processo {
         });
     }
 
-    addParte(parteProcesso: ParteProcesso): void {
+    addParteProcesso(parteProcesso: ParteProcesso): void {
         this._partes.push(parteProcesso);
     }
 
+    updateParteProcesso(parteProcesso: ParteProcesso): void {
+        this._partes.find((parte) => parte.id === parteProcesso.id).update({
+            cedenteId: parteProcesso.cedenteId,
+            percentual: parteProcesso.percentual,
+            processo: this,
+            parteProcessoExists: parteProcesso
+        });
+    }
+    
     // Métodos de domínio
     update({ numero, carteiraId, valorPedido, valorHomologado, tipo, processoExists }: { numero?: string, carteiraId?: string, valorPedido?: number, valorHomologado?: number, tipo?: TipoProcesso, processoExists?: Processo | null }): void {
         if (processoExists && processoExists.id !== this.id) {
@@ -129,6 +138,16 @@ export class Processo {
         // TODO: Implementar lógica de exclusão
         // Deverá ser verificado se o processo possui algum registro (partes, documentos, etc) associado
         // Se houver, deve ser lançada uma exceção
+        // Um processo que já foi compara não pode ser excluida
+        return true;
+    }
+
+    validatePartes(): boolean {
+        const somaPercentuais = this.partes.reduce((acc, parte) => acc + parte.percentual, 0);
+        
+        if (somaPercentuais > 100) {
+            throw new Error('invalid.processo.partes.percentual');
+        }
         return true;
     }
 }

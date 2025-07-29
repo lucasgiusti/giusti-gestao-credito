@@ -31,12 +31,27 @@ export class CreateProcessoUseCase {
         valorHomologado,
         tipo,
     }: CreateProcessoUseCaseCommand): Promise<Processo> {
+        console.log('------params');
+        console.log({
+            numero,
+            carteiraId,
+            valorPedido,
+            valorHomologado,
+            tipo,
+        });
+        console.log('------params');
         const carteira = await this.carteiraRepository.findById(carteiraId);
+        console.log('----carteira');
+        console.log(carteira);
+        console.log('----carteira');
         if (!carteira) {
             throw new Error('notfound.carteira');
         }
 
         const processoExists = await this.processoRepository.findByNumero(numero);
+        console.log('----processoExists');
+        console.log(processoExists);
+        console.log('----processoExists');
 
         const processo = Processo.create({
             numero,
@@ -46,9 +61,13 @@ export class CreateProcessoUseCase {
             tipo,
             processoExists,
         });
-
+        console.log('----processo');
+        console.log(processo);
+        console.log('----processo');
         const processoCreated = await this.processoRepository.create(processo);
-
+        console.log('----processoCreated');
+        console.log(processoCreated);
+        console.log('----processoCreated');
         return processoCreated;
     }
 }

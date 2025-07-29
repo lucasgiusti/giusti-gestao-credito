@@ -22,7 +22,7 @@ export class TypeOrmProcessoMapper {
         // Adicionamos as partes após a criação do processo para evitar dependência circular
         if (entity.partes && entity.partes.length > 0) {
             entity.partes.forEach(parte => {
-                model.addParte(TypeOrmParteProcessoMapper.toDomain(parte));
+                model.addParteProcesso(TypeOrmParteProcessoMapper.toDomain(parte));
             });
         }
         return model;

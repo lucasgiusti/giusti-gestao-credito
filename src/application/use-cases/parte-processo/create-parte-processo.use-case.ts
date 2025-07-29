@@ -7,7 +7,6 @@ import { ICedenteRepository } from 'src/application/interfaces/repositories/cede
 interface CreateParteProcessoUseCaseCommand {
     processoId: string;
     cedenteId: string;
-    valor: number;
     percentual: number;
 }
 
@@ -23,7 +22,6 @@ export class CreateParteProcessoUseCase {
     async execute({
         processoId,
         cedenteId,
-        valor,
         percentual
     }: CreateParteProcessoUseCaseCommand): Promise<ParteProcesso> {
         const processo = await this.processoRepository.findById(processoId);
@@ -45,6 +43,10 @@ export class CreateParteProcessoUseCase {
             processo,
             parteProcessoExists: parteExists
         });
+
+        processo.addParteProcesso(parteProcesso);
+
+        processo.validatePartes()
 
         const parteProcessoCreated = await this.parteProcessoRepository.create(parteProcesso);
 
