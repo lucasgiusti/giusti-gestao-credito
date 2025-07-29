@@ -6,6 +6,7 @@ import { UpdateParteProcessoDto } from '../dtos/parte-processo/update-parte-proc
 import { CreateParteProcessoUseCase } from 'src/application/use-cases/parte-processo/create-parte-processo.use-case';
 import { FindParteProcessoByIdUseCase } from 'src/application/use-cases/parte-processo/find-parte-processo-by-id.use-case';
 import { FindPartesByProcessoIdUseCase } from 'src/application/use-cases/parte-processo/find-partes-by-processo-id.use-case';
+import { FindAllPartesProcessoUseCase } from 'src/application/use-cases/parte-processo/find-all-partes-processo.use-case';
 import { UpdateParteProcessoUseCase } from 'src/application/use-cases/parte-processo/update-parte-processo.use-case';
 import { DeleteParteProcessoUseCase } from 'src/application/use-cases/parte-processo/delete-parte-processo.use-case';
 
@@ -16,6 +17,7 @@ export class ParteProcessoController {
         private readonly createParteProcessoUseCase: CreateParteProcessoUseCase,
         private readonly findParteProcessoByIdUseCase: FindParteProcessoByIdUseCase,
         private readonly findPartesByProcessoIdUseCase: FindPartesByProcessoIdUseCase,
+        private readonly findAllPartesProcessoUseCase: FindAllPartesProcessoUseCase,
         private readonly updateParteProcessoUseCase: UpdateParteProcessoUseCase,
         private readonly deleteParteProcessoUseCase: DeleteParteProcessoUseCase
     ) {}
@@ -37,7 +39,16 @@ export class ParteProcessoController {
     @ApiOperation({ summary: 'Listar todas as partes de um processo' })
     @ApiResponse({ status: 200, description: 'Lista de partes do processo', type: [ParteProcessoResponseDto] })
     async findByProcessoId(@Param('processoId') processoId: string): Promise<ParteProcessoResponseDto[]> {
-        const partesProcesso = await this.findPartesByProcessoIdUseCase.execute(processoId);
+        const partesProcesso = await this.findPartesByProcessoIdUseCase.execute({ processoId });
+
+        return ParteProcessoResponseDto.fromEntities(partesProcesso);
+    }
+
+    @Get()
+    @ApiOperation({ summary: 'Listar todas as partes de processo' })
+    @ApiResponse({ status: 200, description: 'Lista de partes de processo', type: [ParteProcessoResponseDto] })
+    async findAll(): Promise<ParteProcessoResponseDto[]> {
+        const partesProcesso = await this.findAllPartesProcessoUseCase.execute({});
 
         return ParteProcessoResponseDto.fromEntities(partesProcesso);
     }
@@ -46,7 +57,7 @@ export class ParteProcessoController {
     @ApiOperation({ summary: 'Buscar uma parte de processo pelo ID' })
     @ApiResponse({ status: 200, description: 'Parte de processo encontrada', type: ParteProcessoResponseDto })
     async findById(@Param('id') id: string): Promise<ParteProcessoResponseDto> {
-        const parteProcesso = await this.findParteProcessoByIdUseCase.execute(id);
+        const parteProcesso = await this.findParteProcessoByIdUseCase.execute({ id });
 
         return ParteProcessoResponseDto.fromEntity(parteProcesso);
     }
@@ -71,6 +82,6 @@ export class ParteProcessoController {
     @ApiOperation({ summary: 'Excluir uma parte de processo' })
     @ApiResponse({ status: 204, description: 'Parte de processo excluída' })
     async delete(@Param('id') id: string): Promise<void> {
-        await this.deleteParteProcessoUseCase.execute(id);
+        await this.deleteParteProcessoUseCase.execute({ id });
     }
 }

@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Processo } from 'src/domain/entities/processo';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
 
+interface FindAllProcessosUseCaseCommand {
+    
+}
 @Injectable()
 export class FindAllProcessosUseCase {
 
@@ -9,7 +12,7 @@ export class FindAllProcessosUseCase {
         private processoRepository: IProcessoRepository
     ) {}
 
-    async execute(): Promise<Processo[]> {
+    async execute({}: FindAllProcessosUseCaseCommand): Promise<Processo[]> {
         return await this.processoRepository.findAll();
     }
 }

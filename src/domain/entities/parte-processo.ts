@@ -1,4 +1,5 @@
-import { Processo } from "./processo";
+import type { Processo } from "./processo";
+import type { Cedente } from "./cedente";
 
 type ParteProcessoProps = {
     id?: string;
@@ -8,6 +9,8 @@ type ParteProcessoProps = {
     percentual: number;
     createdAt?: Date;
     updatedAt?: Date;
+    processo?: Processo;
+    cedente?: Cedente;
 }
 export class ParteProcesso {
     private _id?: string;
@@ -17,6 +20,8 @@ export class ParteProcesso {
     private _percentual: number;
     private _createdAt?: Date;
     private _updatedAt?: Date;
+    private _processo?: Processo;
+    private _cedente?: Cedente;
     
 
     constructor(props: ParteProcessoProps) {
@@ -27,6 +32,8 @@ export class ParteProcesso {
         this._percentual = props.percentual;
         this._createdAt = props.createdAt;
         this._updatedAt = props.updatedAt;
+        this._processo = props.processo;
+        this._cedente = props.cedente;
     }
 
     // Getters
@@ -58,7 +65,15 @@ export class ParteProcesso {
         return this._updatedAt;
     }
 
-    static create({processoId, cedenteId, percentual, processo, parteProcessoExists}: {processoId: string, cedenteId: string, percentual: number, processo: Processo, parteProcessoExists: ParteProcesso | null}): ParteProcesso {
+    get processo(): Processo | undefined {
+        return this._processo;
+    }
+
+    get cedente(): Cedente | undefined {
+        return this._cedente;
+    }
+
+    static create({processoId, cedenteId, percentual, valorHomologado, parteProcessoExists}: {processoId: string, cedenteId: string, percentual: number, valorHomologado: number, parteProcessoExists: ParteProcesso | null}): ParteProcesso {
         if (parteProcessoExists) {
             throw new Error('invalid.parteProcessoExists');
         }
@@ -69,13 +84,13 @@ export class ParteProcesso {
             valor: 0,
         });
 
-        parteProcesso.calculateValor(processo.valorHomologado);
+        parteProcesso.calculateValor(valorHomologado);
 
         return parteProcesso;
     }
 
     // Métodos de domínio
-    update({ cedenteId, percentual, processo, parteProcessoExists }: { cedenteId?: string, percentual?: number, processo: Processo, parteProcessoExists: ParteProcesso | null }): void {
+    update({ cedenteId, percentual, parteProcessoExists }: { cedenteId?: string, percentual?: number, parteProcessoExists: ParteProcesso | null }): void {
         if (parteProcessoExists && parteProcessoExists.id !== this.id) {
             throw new Error('invalid.parteProcessoExists');
         }
@@ -86,7 +101,7 @@ export class ParteProcesso {
             this._percentual = percentual;
         }
 
-        this.calculateValor(processo.valorHomologado);
+        this.calculateValor(this._processo.valorHomologado);
 
         this._updatedAt = new Date();
     }

@@ -100,7 +100,6 @@ export class Processo {
         this._partes.find((parte) => parte.id === parteProcesso.id).update({
             cedenteId: parteProcesso.cedenteId,
             percentual: parteProcesso.percentual,
-            processo: this,
             parteProcessoExists: parteProcesso
         });
     }

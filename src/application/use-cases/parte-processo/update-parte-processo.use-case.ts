@@ -47,7 +47,6 @@ export class UpdateParteProcessoUseCase {
         parteProcesso.update({
             cedenteId,
             percentual,
-            processo,
             parteProcessoExists
         });
 

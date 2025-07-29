@@ -1,5 +1,7 @@
 import { ParteProcesso } from 'src/domain/entities/parte-processo';
 import { ParteProcesso as ParteProcessoTypeOrm } from '../entities/parte-processo.entity';
+import { TypeOrmProcessoMapper } from './typeorm-processo.mapper';
+import { TypeOrmCedenteMapper } from './typeorm-cedente.mapper';
 
 export class TypeOrmParteProcessoMapper {
     
@@ -14,6 +16,8 @@ export class TypeOrmParteProcessoMapper {
             percentual: typeof entity.percentual === 'string' ? parseFloat(entity.percentual) : entity.percentual,
             createdAt: entity.created_at,
             updatedAt: entity.updated_at,
+            processo: entity.processo ? TypeOrmProcessoMapper.toDomain(entity.processo) : undefined,
+            cedente: entity.cedente ? TypeOrmCedenteMapper.toDomain(entity.cedente) : undefined,
         });
         return model;
     }
