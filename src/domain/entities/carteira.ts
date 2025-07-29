@@ -38,6 +38,14 @@ export class Carteira {
         return this._updatedAt;
     }
 
+    static create({ nome }: { nome: string }): Carteira {
+        return new Carteira({
+            nome,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+    }
+
     // Métodos de domínio
     update({ nome }: { nome: string }): void {
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
