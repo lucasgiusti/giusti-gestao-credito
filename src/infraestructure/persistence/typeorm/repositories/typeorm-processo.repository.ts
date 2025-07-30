@@ -24,7 +24,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
 
   async findById(id: string): Promise<Processo | null> {
     const processo = await this.processoRepository.findOne({
-      where: { id },
+      where: { id, deleted_at: null },
       relations: ['partes']
     });
     
@@ -37,7 +37,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
 
   async findByNumero(numero: string): Promise<Processo | null> {
     const processo = await this.processoRepository.findOne({
-      where: { numero },
+      where: { numero, deleted_at: null },
       relations: ['partes']
     });
     
@@ -50,7 +50,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
 
   async findByCarteiraId(carteiraId: string): Promise<Processo[]> {
     const processos = await this.processoRepository.find({
-      where: { carteira_id: carteiraId },
+      where: { carteira_id: carteiraId, deleted_at: null },
       relations: ['partes']
     });
     
@@ -58,9 +58,12 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
   }
 
   async findAll(): Promise<Processo[]> {
-    const processos = await this.processoRepository.find({
-      relations: ['partes']
-    });
+    const processos = await this.processoRepository.find(
+      {
+        where: { deleted_at: null },
+        relations: ['partes']
+      }
+    );
     
     return processos.map(processo => TypeOrmProcessoMapper.toDomain(processo));
   }
@@ -71,7 +74,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
     await this.processoRepository.update(id, data);
 
     const updatedProcesso = await this.processoRepository.findOne({ 
-      where: { id },
+      where: { id, deleted_at: null },
       relations: ['partes']
     });
     

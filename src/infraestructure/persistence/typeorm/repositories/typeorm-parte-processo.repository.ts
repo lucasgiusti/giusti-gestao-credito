@@ -24,7 +24,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findById(id: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
-      where: { id },
+      where: { id, deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
@@ -37,7 +37,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findByProcessoId(processoId: string): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
-      where: { processo_id: processoId },
+      where: { processo_id: processoId, deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
@@ -46,7 +46,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findByCedenteId(cedenteId: string): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
-      where: { cedente_id: cedenteId },
+      where: { cedente_id: cedenteId, deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
@@ -55,6 +55,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findAll(): Promise<ParteProcesso[]> {
     const partesProcesso = await this.parteProcessoRepository.find({
+      where: { deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
@@ -67,7 +68,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
     await this.parteProcessoRepository.update(id, data);
 
     const updatedParteProcesso = await this.parteProcessoRepository.findOne({ 
-      where: { id },
+      where: { id, deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
@@ -88,7 +89,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
 
   async findByProcessoIdAndCedenteId(processoId: string, cedenteId: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
-      where: { processo_id: processoId, cedente_id: cedenteId },
+      where: { processo_id: processoId, cedente_id: cedenteId, deleted_at: null },
       relations: ['cedente', 'processo']
     });
     
