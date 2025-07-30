@@ -4,6 +4,7 @@ import { Carteira } from 'src/domain/entities/carteira';
 
 interface CreateCarteiraUseCaseCommand {
     nome: string,
+    codigo: string,
 }
 
 @Injectable()
@@ -15,9 +16,11 @@ export class CreateCarteiraUseCase {
 
     async execute({
         nome,
+        codigo,
     }: CreateCarteiraUseCaseCommand): Promise<Carteira> {
         const carteira = Carteira.create({
             nome,
+            codigo,
         });
 
         const carteiraCreated = await this.carteiraRepository.create(carteira);

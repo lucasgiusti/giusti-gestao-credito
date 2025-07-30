@@ -9,6 +9,7 @@ export class TypeOrmCarteiraMapper {
         const model = new Carteira({
             id: entity.id,
             nome: entity.nome,
+            codigo: entity.codigo,
             createdAt: entity.created_at,
             updatedAt: entity.updated_at,
         });
@@ -18,6 +19,7 @@ export class TypeOrmCarteiraMapper {
     static toTypeOrm(carteira: Carteira) {
         return {
             nome: carteira.nome,
+            codigo: carteira.codigo,
             updated_at: carteira.updatedAt,
         }
     }

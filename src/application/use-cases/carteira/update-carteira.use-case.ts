@@ -5,6 +5,7 @@ import { ICarteiraRepository } from 'src/application/interfaces/repositories/car
 interface UpdateCarteiraUseCaseCommand {
     id: string,
     nome: string,
+    codigo: string,
 }
 
 @Injectable()
@@ -17,13 +18,14 @@ export class UpdateCarteiraUseCase {
     async execute({
         id,
         nome,
+        codigo,
     }: UpdateCarteiraUseCaseCommand): Promise<Carteira> {
         const carteira = await this.carteiraRepository.findById(id);
         if (!carteira) {
             throw new Error('invalid.carteira.not.found');
         }
 
-        carteira.update({ nome });
+        carteira.update({ nome, codigo });
 
         const carteiraUpdated = await this.carteiraRepository.update(id, carteira);
         

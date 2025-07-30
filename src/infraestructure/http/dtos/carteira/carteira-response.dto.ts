@@ -8,6 +8,9 @@ export class CarteiraResponseDto {
   @ApiProperty({ description: 'Nome da carteira' })
   nome: string;
 
+  @ApiProperty({ description: 'Código da carteira' })
+  codigo: string;
+
   @ApiProperty({ description: 'Data de criação do registro' })
   createdAt: Date;
 
@@ -17,6 +20,7 @@ export class CarteiraResponseDto {
   constructor(carteira: Carteira) {
     this.id = carteira.id;
     this.nome = carteira.nome;
+    this.codigo = carteira.codigo;
     this.createdAt = carteira.createdAt;
     this.updatedAt = carteira.updatedAt;
   }
