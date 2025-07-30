@@ -21,7 +21,9 @@ export class DeleteProcessoUseCase {
             throw new Error('notfound.processo');
         }
 
-        await this.parteProcessoRepository.deleteByProcessoId(id);
+        const existsPartes = await this.parteProcessoRepository.existsByProcessoId(id);
+
+        processo.canBeDeleted(existsPartes);
 
         await this.processoRepository.delete(id);
     }

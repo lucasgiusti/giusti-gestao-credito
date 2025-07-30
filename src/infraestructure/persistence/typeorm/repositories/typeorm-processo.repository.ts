@@ -88,4 +88,16 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
   async delete(id: string): Promise<void> {
     await this.processoRepository.softDelete(id);
   }
+
+  async existsByCarteiraId(carteiraId: string): Promise<boolean> {
+    const processo = await this.processoRepository.findOne({
+      where: { carteira_id: carteiraId, deleted_at: null },
+    });
+    
+    if (!processo) {
+      return false;
+    }
+    
+    return true;
+  }
 }

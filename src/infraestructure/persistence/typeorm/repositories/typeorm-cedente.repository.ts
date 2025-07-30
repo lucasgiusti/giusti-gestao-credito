@@ -58,7 +58,7 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     const cedente = await this.cedenteRepository.findOne({
       where: { documento }
     });
-    
+
     if (!cedente) {
       return null;
     }

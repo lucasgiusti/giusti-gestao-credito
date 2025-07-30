@@ -4,7 +4,9 @@ export abstract class IParteProcessoRepository {
   abstract create(parteProcesso: ParteProcesso): Promise<ParteProcesso>;
   abstract findById(id: string): Promise<ParteProcesso | null>;
   abstract findByProcessoId(processoId: string): Promise<ParteProcesso[]>;
+  abstract existsByProcessoId(processoId: string): Promise<boolean>;
   abstract findByCedenteId(cedenteId: string): Promise<ParteProcesso[]>;
+  abstract existsByCedenteId(cedenteId: string): Promise<boolean>;
   abstract findByProcessoIdAndCedenteId(processoId: string, cedenteId: string): Promise<ParteProcesso | null>;
   abstract findAll(): Promise<ParteProcesso[]>;
   abstract update(id: string, parteProcesso: ParteProcesso): Promise<ParteProcesso | null>;

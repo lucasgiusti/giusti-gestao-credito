@@ -133,11 +133,10 @@ export class Processo {
         this._updatedAt = new Date();
     }
 
-    canBeDeleted(): boolean {
-        // TODO: Implementar lógica de exclusão
-        // Deverá ser verificado se o processo possui algum registro (partes, documentos, etc) associado
-        // Se houver, deve ser lançada uma exceção
-        // Um processo que já foi compara não pode ser excluida
+    canBeDeleted(existsPartes: boolean): boolean {
+        if (existsPartes) {
+            throw new Error('invalid.processo.exists.partes');
+        }
         return true;
     }
 

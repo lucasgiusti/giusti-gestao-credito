@@ -1,11 +1,16 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { HttpStatusDescriptions } from './http-status-descriptions';
 
 
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(CustomExceptionFilter.name);
   catch(exception: any, host: ArgumentsHost) {
+    // Log da exceção no console para facilitar a depuração
+    this.logger.error(`Erro capturado: ${exception.message}`);
+    console.error('Detalhes do erro:', exception);
+    
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
