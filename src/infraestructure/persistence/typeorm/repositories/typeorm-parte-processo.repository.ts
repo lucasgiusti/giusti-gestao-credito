@@ -99,4 +99,28 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
     
     return TypeOrmParteProcessoMapper.toDomain(parteProcesso);
   }
+
+  async existsByProcessoId(processoId: string): Promise<boolean> {
+    const parteProcesso = await this.parteProcessoRepository.findOne({
+      where: { processo_id: processoId, deleted_at: null },
+    });
+    
+    if (!parteProcesso) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  async existsByCedenteId(cedenteId: string): Promise<boolean> {
+    const parteProcesso = await this.parteProcessoRepository.findOne({
+      where: { cedente_id: cedenteId, deleted_at: null },
+    });
+    
+    if (!parteProcesso) {
+      return false;
+    }
+    
+    return true;
+  }
 }

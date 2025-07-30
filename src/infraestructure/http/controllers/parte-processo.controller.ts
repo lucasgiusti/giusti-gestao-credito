@@ -9,6 +9,7 @@ import { FindPartesByProcessoIdUseCase } from 'src/application/use-cases/parte-p
 import { FindAllPartesProcessoUseCase } from 'src/application/use-cases/parte-processo/find-all-partes-processo.use-case';
 import { UpdateParteProcessoUseCase } from 'src/application/use-cases/parte-processo/update-parte-processo.use-case';
 import { DeleteParteProcessoUseCase } from 'src/application/use-cases/parte-processo/delete-parte-processo.use-case';
+import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 
 @ApiTags('v1/partes-processo')
 @Controller('v1/partes-processo')
@@ -22,6 +23,7 @@ export class ParteProcessoController {
         private readonly deleteParteProcessoUseCase: DeleteParteProcessoUseCase
     ) {}
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Post()
     @ApiOperation({ summary: 'Criar uma nova parte de processo' })
     @ApiResponse({ status: 201, description: 'Parte de processo criada com sucesso', type: ParteProcessoResponseDto })
@@ -35,6 +37,7 @@ export class ParteProcessoController {
         return ParteProcessoResponseDto.fromEntity(parteProcesso);
     }
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Get('processo/:processoId')
     @ApiOperation({ summary: 'Listar todas as partes de um processo' })
     @ApiResponse({ status: 200, description: 'Lista de partes do processo', type: [ParteProcessoResponseDto] })
@@ -44,6 +47,7 @@ export class ParteProcessoController {
         return ParteProcessoResponseDto.fromEntities(partesProcesso);
     }
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Get()
     @ApiOperation({ summary: 'Listar todas as partes de processo' })
     @ApiResponse({ status: 200, description: 'Lista de partes de processo', type: [ParteProcessoResponseDto] })
@@ -53,6 +57,7 @@ export class ParteProcessoController {
         return ParteProcessoResponseDto.fromEntities(partesProcesso);
     }
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Get(':id')
     @ApiOperation({ summary: 'Buscar uma parte de processo pelo ID' })
     @ApiResponse({ status: 200, description: 'Parte de processo encontrada', type: ParteProcessoResponseDto })
@@ -62,6 +67,7 @@ export class ParteProcessoController {
         return ParteProcessoResponseDto.fromEntity(parteProcesso);
     }
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Put(':id')
     @ApiOperation({ summary: 'Atualizar uma parte de processo' })
     @ApiResponse({ status: 200, description: 'Parte de processo atualizada', type: ParteProcessoResponseDto })
@@ -78,6 +84,7 @@ export class ParteProcessoController {
         return ParteProcessoResponseDto.fromEntity(parteProcesso);
     }
 
+    @Auth('MASTER', 'ADMIN', 'USER')
     @Delete(':id')
     @ApiOperation({ summary: 'Excluir uma parte de processo' })
     @ApiResponse({ status: 204, description: 'Parte de processo excluída' })

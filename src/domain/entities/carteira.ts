@@ -67,10 +67,10 @@ export class Carteira {
         this._updatedAt = new Date();
     }
 
-    canBeDeleted(): boolean {
-        // TODO: Implementar lógica de exclusão
-        // Deverá ser verificado se a carteira possui algum processo associado
-        // Se houver, deve ser lançada uma exceção
+    canBeDeleted(existsProcessos: boolean): boolean {
+        if (existsProcessos) {
+            throw new Error('invalid.carteira.has.processos');
+        }
         return true;
     }
 }

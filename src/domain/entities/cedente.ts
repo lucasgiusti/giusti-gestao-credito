@@ -64,10 +64,10 @@ export class Cedente {
         this._updatedAt = new Date();
     }
 
-    canBeDeleted(): boolean {
-        // TODO: Implementar lógica de exclusão
-        // Deverá ser verificado se o cedente possui algum processo associado
-        // Se houver, deve ser lançada uma exceção
+    canBeDeleted(existsPartes: boolean): boolean {
+        if (existsPartes) {
+            throw new Error('invalid.cedente.exists.partes');
+        }
         return true;
     }
 

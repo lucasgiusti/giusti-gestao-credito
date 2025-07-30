@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
+import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
 
 interface DeleteCedenteUseCaseCommand {
     id: string,
@@ -10,6 +11,7 @@ export class DeleteCedenteUseCase {
 
     constructor(
         private readonly cedenteRepository: ICedenteRepository,
+        private readonly parteProcessoRepository: IParteProcessoRepository,
     ) {}
 
     async execute({
@@ -20,7 +22,9 @@ export class DeleteCedenteUseCase {
             throw new Error('invalid.cedente.not.found');
         }
 
-        cedente.canBeDeleted();
+        const existsPartes = await this.parteProcessoRepository.existsByCedenteId(id);
+
+        cedente.canBeDeleted(existsPartes);
 
         await this.cedenteRepository.delete(id);
     }

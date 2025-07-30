@@ -34,6 +34,18 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
     return TypeOrmCarteiraMapper.toDomain(carteira);
   }
 
+  async findByCodigo(codigo: string): Promise<Carteira | null> {
+    const carteira = await this.carteiraRepository.findOne({
+      where: { codigo }
+    });
+    
+    if (!carteira) {
+      return null;
+    }
+    
+    return TypeOrmCarteiraMapper.toDomain(carteira);
+  }
+
   async findAll(): Promise<Carteira[]> {
     const carteiras = await this.carteiraRepository.find();
     
