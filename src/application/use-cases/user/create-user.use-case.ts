@@ -7,6 +7,7 @@ import { UserCreatedEvent } from 'src/domain/events/user-created.event';
 
 interface CreateUserUseCaseCommand {
     authenticatedUser: AuthenticatedUser,
+    name: string,
 }
 
 @Injectable()
@@ -19,11 +20,12 @@ export class CreateUserUseCase {
 
     async execute({
         authenticatedUser,
+        name,
     }: CreateUserUseCaseCommand): Promise<User> {
         const userExists = await this.userRepository.findByEmail(authenticatedUser.email);
 
         const user = User.createFromAuthUser({
-            name: authenticatedUser.email.split('@')[0],
+            name,
             email: authenticatedUser.email,
             authServiceUserId: authenticatedUser.id,
             userExists
