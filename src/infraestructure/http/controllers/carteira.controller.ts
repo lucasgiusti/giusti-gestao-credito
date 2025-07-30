@@ -29,7 +29,7 @@ export class CarteiraController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     async create(@Body() createCarteiraDto: CreateCarteiraDto): Promise<CarteiraResponseDto> {
-        const carteira = await this.createCarteiraUseCase.execute({nome: createCarteiraDto.nome});
+        const carteira = await this.createCarteiraUseCase.execute({nome: createCarteiraDto.nome, codigo: createCarteiraDto.codigo});
         return CarteiraResponseDto.fromEntity(carteira);
     }
     
@@ -61,7 +61,7 @@ export class CarteiraController {
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     async update(@Param('id') id: string, @Body() updateCarteiraDto: UpdateCarteiraDto): Promise<CarteiraResponseDto> {
-        const carteira = await this.updateCarteiraUseCase.execute({id, nome: updateCarteiraDto.nome});
+        const carteira = await this.updateCarteiraUseCase.execute({id, nome: updateCarteiraDto.nome, codigo: updateCarteiraDto.codigo});
         return CarteiraResponseDto.fromEntity(carteira);
     }
 
