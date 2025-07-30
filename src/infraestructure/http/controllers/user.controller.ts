@@ -11,6 +11,7 @@ import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.us
 import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { FindUserByIdUseCase } from 'src/application/use-cases/user/find-user-by-id.use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
+import { CreateUserDto } from '../dtos/user/create-user.dto';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -30,9 +31,10 @@ export class UserController {
     @ApiResponse({ status: 201, description: 'Usuário criado com sucesso', type: UserResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async create(@Authenticated() authenticatedUser: AuthenticatedUser): Promise<UserResponseDto> {
+    async create(@Authenticated() authenticatedUser: AuthenticatedUser, @Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
         const user = await this.createUserUseCase.execute({
             authenticatedUser,
+            name: createUserDto.name,
         });
         return UserResponseDto.fromEntity(user);
     }
