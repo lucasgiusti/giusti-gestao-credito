@@ -4,12 +4,14 @@ import { User, UserRole } from "./user";
 type CarteiraProps = {
     id?: string;
     nome: string;
+    codigo: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 export class Carteira {
     private _id?: string;
     private _nome: string;
+    private _codigo: string;
     private _createdAt?: Date;
     private _updatedAt?: Date;
     
@@ -17,6 +19,7 @@ export class Carteira {
     constructor(props: CarteiraProps) {
         this._id = props.id;
         this._nome = props.nome;
+        this._codigo = props.codigo;
         this._createdAt = props.createdAt;
         this._updatedAt = props.updatedAt;
     }
@@ -30,6 +33,10 @@ export class Carteira {
         return this._nome;
     }
 
+    get codigo(): string {
+        return this._codigo;
+    }
+
     get createdAt(): Date | undefined {
         return this._createdAt;
     }
@@ -38,18 +45,23 @@ export class Carteira {
         return this._updatedAt;
     }
 
-    static create({ nome }: { nome: string }): Carteira {
+    static create({ nome, codigo }: { nome: string, codigo: string }): Carteira {
         return new Carteira({
             nome,
+            codigo,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
     }
 
     // Métodos de domínio
-    update({ nome }: { nome: string }): void {
+    update({ nome, codigo }: { nome: string, codigo: string }): void {
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
-        this._nome = nome;
+            this._nome = nome;
+        }
+        
+        if (codigo !== undefined && codigo !== null && codigo.trim() !== '') {
+            this._codigo = codigo;
         }
 
         this._updatedAt = new Date();
