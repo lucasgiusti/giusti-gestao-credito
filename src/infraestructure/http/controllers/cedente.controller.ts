@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Delete, Put, NotFoundException, Query, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Delete, Put, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiExtraModels, ApiOkResponse, getSchemaPath, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { SwaggerPaginatedDto } from '../dtos/common/swagger-paginated.dto';
 import { CreateCedenteUseCase } from 'src/application/use-cases/cedente/create-cedente.use-case';
@@ -7,15 +7,14 @@ import { CreateCedenteDto } from 'src/infraestructure/http/dtos/cedente/create-c
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 import { FindAllCedentesUseCase } from 'src/application/use-cases/cedente/find-all-cedentes.use-case';
 import { FindCedenteByIdUseCase } from 'src/application/use-cases/cedente/find-cedente-by-id.use-case';
-
 import { DeleteCedenteUseCase } from 'src/application/use-cases/cedente/delete-cedente.use-case';
 import { UpdateCedenteDto } from '../dtos/cedente/update-cedente.dto';
 import { UpdateCedenteUseCase } from 'src/application/use-cases/cedente/update-cedente.use-case';
 import { FindCedenteByDocumentoUseCase } from 'src/application/use-cases/cedente/find-cedente-by-documento.use-case';
 
-@ApiTags('cedentes')
+@ApiTags('v1/cedentes')
 @ApiExtraModels(SwaggerPaginatedDto(CedenteResponseDto))
-@Controller('cedentes')
+@Controller('v1/cedentes')
 export class CedenteController {
 
     constructor(

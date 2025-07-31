@@ -14,9 +14,9 @@ import { ImportProcessoCsvUseCase } from 'src/application/use-cases/processo/imp
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 import { ImportProcessoCsvResponseDto } from '../dtos/processo/import-processo-csv-response.dto';
 
-@ApiTags('processos')
+@ApiTags('v1/processos')
 @ApiExtraModels(SwaggerPaginatedDto(ProcessoResponseDto))
-@Controller('processos')
+@Controller('v1/processos')
 export class ProcessoController {
     constructor(
         private readonly createProcessoUseCase: CreateProcessoUseCase,

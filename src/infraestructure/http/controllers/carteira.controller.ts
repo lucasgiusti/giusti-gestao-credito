@@ -11,9 +11,9 @@ import { UpdateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/update
 import { FindCarteiraByIdUseCase } from 'src/application/use-cases/carteira/find-carteira-by-id.use-case';
 import { DeleteCarteiraUseCase } from 'src/application/use-cases/carteira/delete-carteira.use-case';
 
-@ApiTags('carteiras')
+@ApiTags('v1/carteiras')
 @ApiExtraModels(SwaggerPaginatedDto(CarteiraResponseDto))
-@Controller('carteiras')
+@Controller('v1/carteiras')
 export class CarteiraController {
 
     constructor(
