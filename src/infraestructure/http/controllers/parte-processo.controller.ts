@@ -12,9 +12,9 @@ import { UpdateParteProcessoUseCase } from 'src/application/use-cases/parte-proc
 import { DeleteParteProcessoUseCase } from 'src/application/use-cases/parte-processo/delete-parte-processo.use-case';
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 
-@ApiTags('partes-processo')
+@ApiTags('v1/partes-processo')
 @ApiExtraModels(SwaggerPaginatedDto(ParteProcessoResponseDto))
-@Controller('partes-processo')
+@Controller('v1/partes-processo')
 export class ParteProcessoController {
     constructor(
         private readonly createParteProcessoUseCase: CreateParteProcessoUseCase,
