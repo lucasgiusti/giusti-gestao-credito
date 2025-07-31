@@ -46,7 +46,9 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
       relations: ['cedente', 'processo'],
       order: {
         created_at: 'DESC'
-      }
+      },
+      skip,
+      take: limit
     });
     
     const totalPages = Math.ceil(total / limit);
@@ -70,7 +72,9 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
       relations: ['cedente', 'processo'],
       order: {
         created_at: 'DESC'
-      }
+      },
+      skip,
+      take: limit
     });
 
     const totalPages = Math.ceil(total / limit);
