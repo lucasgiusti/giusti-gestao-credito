@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags, ApiExtraModels, ApiOkResponse, getSchemaPath, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { SwaggerPaginatedDto } from '../dtos/common/swagger-paginated.dto';
 import { CreateParteProcessoDto } from '../dtos/parte-processo/create-parte-processo.dto';
 import { ParteProcessoResponseDto } from '../dtos/parte-processo/parte-processo-response.dto';
 import { UpdateParteProcessoDto } from '../dtos/parte-processo/update-parte-processo.dto';
@@ -11,8 +12,9 @@ import { UpdateParteProcessoUseCase } from 'src/application/use-cases/parte-proc
 import { DeleteParteProcessoUseCase } from 'src/application/use-cases/parte-processo/delete-parte-processo.use-case';
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 
-@ApiTags('v1/partes-processo')
-@Controller('v1/partes-processo')
+@ApiTags('partes-processo')
+@ApiExtraModels(SwaggerPaginatedDto(ParteProcessoResponseDto))
+@Controller('partes-processo')
 export class ParteProcessoController {
     constructor(
         private readonly createParteProcessoUseCase: CreateParteProcessoUseCase,
@@ -25,6 +27,7 @@ export class ParteProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Post()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Criar uma nova parte de processo' })
     @ApiResponse({ status: 201, description: 'Parte de processo criada com sucesso', type: ParteProcessoResponseDto })
     async create(@Body() createParteProcessoDto: CreateParteProcessoDto): Promise<ParteProcessoResponseDto> {
@@ -39,26 +42,54 @@ export class ParteProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get('processo/:processoId')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Listar todas as partes de um processo' })
-    @ApiResponse({ status: 200, description: 'Lista de partes do processo', type: [ParteProcessoResponseDto] })
-    async findByProcessoId(@Param('processoId') processoId: string): Promise<ParteProcessoResponseDto[]> {
-        const partesProcesso = await this.findPartesByProcessoIdUseCase.execute({ processoId });
+    @ApiOkResponse({
+        description: 'Lista paginada de partes do processo',
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(SwaggerPaginatedDto(ParteProcessoResponseDto)) },
+            ],
+        },
+    })
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número da página' })
+    @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Quantidade de registros por página' })
+    async findByProcessoId(
+        @Param('processoId') processoId: string,
+        @Query('page') page?: number,
+        @Query('limit') limit?: number
+    ) {
+        const partesProcesso = await this.findPartesByProcessoIdUseCase.execute({ processoId, page, limit });
 
         return ParteProcessoResponseDto.fromEntities(partesProcesso);
     }
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Listar todas as partes de processo' })
-    @ApiResponse({ status: 200, description: 'Lista de partes de processo', type: [ParteProcessoResponseDto] })
-    async findAll(): Promise<ParteProcessoResponseDto[]> {
-        const partesProcesso = await this.findAllPartesProcessoUseCase.execute({});
+    @ApiOkResponse({
+        description: 'Lista paginada de partes de processo',
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(SwaggerPaginatedDto(ParteProcessoResponseDto)) },
+            ],
+        },
+    })
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número da página' })
+    @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Quantidade de registros por página' })
+    async findAll(
+        @Query('page') page?: number,
+        @Query('limit') limit?: number
+    ) {
+        const partesProcesso = await this.findAllPartesProcessoUseCase.execute({ page, limit });
 
         return ParteProcessoResponseDto.fromEntities(partesProcesso);
     }
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Buscar uma parte de processo pelo ID' })
     @ApiResponse({ status: 200, description: 'Parte de processo encontrada', type: ParteProcessoResponseDto })
     async findById(@Param('id') id: string): Promise<ParteProcessoResponseDto> {
@@ -69,6 +100,7 @@ export class ParteProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Put(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Atualizar uma parte de processo' })
     @ApiResponse({ status: 200, description: 'Parte de processo atualizada', type: ParteProcessoResponseDto })
     async update(
@@ -86,6 +118,7 @@ export class ParteProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Delete(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Excluir uma parte de processo' })
     @ApiResponse({ status: 204, description: 'Parte de processo excluída' })
     async delete(@Param('id') id: string): Promise<void> {

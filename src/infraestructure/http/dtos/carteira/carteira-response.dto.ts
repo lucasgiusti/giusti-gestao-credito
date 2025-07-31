@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { Carteira } from 'src/domain/entities/carteira';
+import { PaginatedResultDto } from '../common/paginated-result.dto';
 
 export class CarteiraResponseDto {
   @ApiProperty({ description: 'ID da carteira' })
@@ -29,7 +31,12 @@ export class CarteiraResponseDto {
     return new CarteiraResponseDto(carteira);
   }
 
-  static fromEntities(carteiras: Carteira[]): CarteiraResponseDto[] {
-    return carteiras.map(carteira => CarteiraResponseDto.fromEntity(carteira));
+  static fromEntities(carteiras: Carteira[] | PaginatedResult<Carteira>): CarteiraResponseDto[] | PaginatedResultDto<CarteiraResponseDto> {
+    if (Array.isArray(carteiras)) {
+      return carteiras.map(carteira => CarteiraResponseDto.fromEntity(carteira));
+    } else {
+      // É um resultado paginado
+      return PaginatedResultDto.fromPaginatedResult(carteiras, (carteira) => CarteiraResponseDto.fromEntity(carteira));
+    }
   }
 }

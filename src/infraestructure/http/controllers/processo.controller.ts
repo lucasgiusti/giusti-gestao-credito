@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiResponse, ApiTags, ApiExtraModels, ApiOkResponse, getSchemaPath, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { SwaggerPaginatedDto } from '../dtos/common/swagger-paginated.dto';
 import { CreateProcessoDto } from '../dtos/processo/create-processo.dto';
 import { ProcessoResponseDto } from '../dtos/processo/processo-response.dto';
 import { UpdateProcessoDto } from '../dtos/processo/update-processo.dto';
@@ -13,8 +14,9 @@ import { ImportProcessoCsvUseCase } from 'src/application/use-cases/processo/imp
 import { Auth } from 'src/infraestructure/decorators/auth.decorator';
 import { ImportProcessoCsvResponseDto } from '../dtos/processo/import-processo-csv-response.dto';
 
-@ApiTags('v1/processos')
-@Controller('v1/processos')
+@ApiTags('processos')
+@ApiExtraModels(SwaggerPaginatedDto(ProcessoResponseDto))
+@Controller('processos')
 export class ProcessoController {
     constructor(
         private readonly createProcessoUseCase: CreateProcessoUseCase,
@@ -27,6 +29,7 @@ export class ProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Post()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Criar um novo processo' })
     @ApiResponse({ status: 201, description: 'Processo criado com sucesso', type: ProcessoResponseDto })
     async create(@Body() createProcessoDto: CreateProcessoDto): Promise<ProcessoResponseDto> {
@@ -43,15 +46,27 @@ export class ProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Listar todos os processos' })
-    @ApiResponse({ status: 200, description: 'Lista de processos', type: [ProcessoResponseDto] })
-    async findAll(): Promise<ProcessoResponseDto[]> {
-        const processos = await this.findAllProcessosUseCase.execute({});
+    @ApiOkResponse({
+        description: 'Lista paginada de processos',
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(SwaggerPaginatedDto(ProcessoResponseDto)) },
+            ],
+        },
+    })
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número da página' })
+    @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Quantidade de registros por página' })
+    async findAll(@Query('page') page?: number,
+            @Query('limit') limit?: number) {
+        const processos = await this.findAllProcessosUseCase.execute({ page, limit });
         return ProcessoResponseDto.fromEntities(processos);
     }
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Buscar um processo pelo ID' })
     @ApiResponse({ status: 200, description: 'Processo encontrado', type: ProcessoResponseDto })
     async findById(@Param('id') id: string): Promise<ProcessoResponseDto> {
@@ -62,6 +77,7 @@ export class ProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Put(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Atualizar um processo' })
     @ApiResponse({ status: 200, description: 'Processo atualizado', type: ProcessoResponseDto })
     async update(
@@ -82,6 +98,7 @@ export class ProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Delete(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Excluir um processo' })
     @ApiResponse({ status: 204, description: 'Processo excluído' })
     async delete(@Param('id') id: string): Promise<void> {
@@ -90,6 +107,7 @@ export class ProcessoController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Post('import/csv')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Importar processos a partir de um arquivo CSV' })
     @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 200, description: 'Dados do CSV processados', type: ImportProcessoCsvResponseDto })

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Query, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
 import { User } from 'src/domain/entities/user';
@@ -12,6 +12,7 @@ import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { FindUserByIdUseCase } from 'src/application/use-cases/user/find-user-by-id.use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
+import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -45,8 +46,9 @@ export class UserController {
     @ApiResponse({ status: 200, description: 'Lista de usuários retornada com sucesso', type: [UserResponseDto] })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
-    async findAll(): Promise<UserResponseDto[]> {
-        const users = await this.findAllUsersUseCase.execute({});
+    async findAll(@Query('page') page?: number,
+            @Query('limit') limit?: number) {
+        const users = await this.findAllUsersUseCase.execute({ page, limit });
         return UserResponseDto.fromEntities(users);
     }
 

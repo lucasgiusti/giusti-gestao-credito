@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User as UserTypeOrm } from '../entities/user.entity';
 import { User } from "src/domain/entities/user";
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
+import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { TypeOrmUserMapper } from '../mapper/typeorm-user.mapper';
 
 @Injectable()
@@ -46,10 +47,27 @@ export class TypeOrmUserRepository implements IUserRepository {
     return TypeOrmUserMapper.toDomain(user);
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.userRepository.find({ where: { deleted_at: null } });
+  async findAll(options?: PaginationOptions): Promise<PaginatedResult<User>> {
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
     
-    return users.map(user => TypeOrmUserMapper.toDomain(user));
+    const [users, total] = await this.userRepository.findAndCount({
+      where: { deleted_at: null },
+      order: { created_at: 'DESC' },
+      skip,
+      take: limit
+    });
+    
+    const totalPages = Math.ceil(total / limit);
+    
+    return {
+      data: users.map(user => TypeOrmUserMapper.toDomain(user)),
+      total,
+      page,
+      limit,
+      totalPages
+    };
   }
 
   async update(id: string, user: User): Promise<User | null> {

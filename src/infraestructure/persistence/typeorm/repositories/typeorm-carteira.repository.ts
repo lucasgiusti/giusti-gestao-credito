@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Carteira as CarteiraTypeOrm } from '../entities/carteira.entity';
 import { Carteira } from "src/domain/entities/carteira";
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
+import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { TypeOrmCarteiraMapper } from '../mapper/typeorm-carteira.mapper';
 
 @Injectable()
@@ -46,10 +47,28 @@ export class TypeOrmCarteiraRepository implements ICarteiraRepository {
     return TypeOrmCarteiraMapper.toDomain(carteira);
   }
 
-  async findAll(): Promise<Carteira[]> {
-    const carteiras = await this.carteiraRepository.find();
+  async findAll(options?: PaginationOptions): Promise<PaginatedResult<Carteira>> {
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
     
-    return carteiras.map(carteira => TypeOrmCarteiraMapper.toDomain(carteira));
+    const [carteiras, total] = await this.carteiraRepository.findAndCount({
+      order: {
+        created_at: 'DESC'
+      },
+      skip,
+      take: limit
+    });
+    
+    const totalPages = Math.ceil(total / limit);
+    
+    return {
+      data: carteiras.map(carteira => TypeOrmCarteiraMapper.toDomain(carteira)),
+      total,
+      page,
+      limit,
+      totalPages
+    };
   }
 
   async update(id: string, carteira: Carteira): Promise<Carteira | null> {
