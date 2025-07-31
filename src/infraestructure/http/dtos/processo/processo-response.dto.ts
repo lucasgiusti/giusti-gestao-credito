@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Processo, TipoProcesso } from "src/domain/entities/processo";
 import { ParteProcessoResponseDto } from "../parte-processo/parte-processo-response.dto";
+import { PaginatedResult } from "src/application/interfaces/common/pagination.interface";
+import { PaginatedResultDto } from "../common/paginated-result.dto";
 
 export class ProcessoResponseDto {
     @ApiProperty({ example: 'uuid-do-processo' })
@@ -37,7 +39,7 @@ export class ProcessoResponseDto {
         this.valorPedido = processo.valorPedido;
         this.valorHomologado = processo.valorHomologado;
         this.tipo = processo.tipo;
-        this.partes = ParteProcessoResponseDto.fromEntities(processo.partes);
+        this.partes = ParteProcessoResponseDto.fromEntities(processo.partes) as ParteProcessoResponseDto[];
         this.createdAt = processo.createdAt;
         this.updatedAt = processo.updatedAt;
     }
@@ -46,7 +48,12 @@ export class ProcessoResponseDto {
         return new ProcessoResponseDto(processo);
     }
 
-    static fromEntities(processos: Processo[]): ProcessoResponseDto[] {
-        return processos.map(processo => ProcessoResponseDto.fromEntity(processo));
+    static fromEntities(processos: Processo[] | PaginatedResult<Processo>): ProcessoResponseDto[] | PaginatedResultDto<ProcessoResponseDto> {
+        if (Array.isArray(processos)) {
+            return processos.map(processo => ProcessoResponseDto.fromEntity(processo));
+        } else {
+            // É um resultado paginado
+            return PaginatedResultDto.fromPaginatedResult(processos, (processo) => ProcessoResponseDto.fromEntity(processo));
+        }
     }
 }

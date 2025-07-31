@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User, UserRole, UserStatus } from 'src/domain/entities/user';
+import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { PaginatedResultDto } from '../common/paginated-result.dto';
 
 export class UserResponseDto {
   @ApiProperty({ description: 'ID do usuário' })
@@ -45,7 +47,12 @@ export class UserResponseDto {
     return new UserResponseDto(user);
   }
 
-  static fromEntities(users: User[]): UserResponseDto[] {
-    return users.map(user => UserResponseDto.fromEntity(user));
+  static fromEntities(users: User[] | PaginatedResult<User>): UserResponseDto[] | PaginatedResultDto< UserResponseDto> {
+    if (Array.isArray(users)) {
+      return users.map(user => UserResponseDto.fromEntity(user));
+    } else {
+      // É um resultado paginado
+      return PaginatedResultDto.fromPaginatedResult(users, (user) => UserResponseDto.fromEntity(user));
+    }
   }
 }

@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Cedente } from 'src/domain/entities/cedente';
 import { DocumentoTipo } from 'src/domain/value-objects/documento';
+import { PaginatedResultDto } from '../common/paginated-result.dto';
+import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 export class CedenteResponseDto {
   @ApiProperty({ description: 'ID do cedente' })
@@ -38,7 +40,12 @@ export class CedenteResponseDto {
     return new CedenteResponseDto(cedente);
   }
 
-  static fromEntities(cedentes: Cedente[]): CedenteResponseDto[] {
-    return cedentes.map(cedente => CedenteResponseDto.fromEntity(cedente));
+  static fromEntities(cedentes: Cedente[] | PaginatedResult<Cedente>): CedenteResponseDto[] | PaginatedResultDto<CedenteResponseDto> {
+    if (Array.isArray(cedentes)) {
+      return cedentes.map(cedente => CedenteResponseDto.fromEntity(cedente));
+    } else {
+      // É um resultado paginado
+      return PaginatedResultDto.fromPaginatedResult(cedentes, (cedente) => CedenteResponseDto.fromEntity(cedente));
+    }
   }
 }

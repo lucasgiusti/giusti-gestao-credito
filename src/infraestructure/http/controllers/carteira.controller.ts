@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth, ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { SwaggerPaginatedDto } from '../dtos/common/swagger-paginated.dto';
 import { CarteiraResponseDto } from '../dtos/carteira/carteira-response.dto';
 import { CreateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/create-carteira.dto';
 import { CreateCarteiraUseCase } from 'src/application/use-cases/carteira/create-carteira.use-case';
@@ -10,8 +11,9 @@ import { UpdateCarteiraDto } from 'src/infraestructure/http/dtos/carteira/update
 import { FindCarteiraByIdUseCase } from 'src/application/use-cases/carteira/find-carteira-by-id.use-case';
 import { DeleteCarteiraUseCase } from 'src/application/use-cases/carteira/delete-carteira.use-case';
 
-@ApiTags('v1/carteiras')
-@Controller('v1/carteiras')
+@ApiTags('carteiras')
+@ApiExtraModels(SwaggerPaginatedDto(CarteiraResponseDto))
+@Controller('carteiras')
 export class CarteiraController {
 
     constructor(
@@ -24,6 +26,7 @@ export class CarteiraController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Post()
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Criar uma nova carteira', description: 'Cria uma nova carteira com os dados fornecidos' })
     @ApiResponse({ status: 201, description: 'Carteira criada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
@@ -35,16 +38,30 @@ export class CarteiraController {
     
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get()
-    @ApiOperation({ summary: 'Listar todas as carteiras', description: 'Retorna uma lista com todas as carteiras cadastradas' })
-    @ApiResponse({ status: 200, description: 'Lista de carteiras retornada com sucesso', type: [CarteiraResponseDto] })
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Listar todas as carteiras', description: 'Retorna uma lista paginada com todas as carteiras cadastradas' })
+    @ApiOkResponse({
+        description: 'Lista paginada de carteiras retornada com sucesso',
+        schema: {
+            allOf: [
+                { $ref: getSchemaPath(SwaggerPaginatedDto(CarteiraResponseDto)) },
+            ],
+        },
+    })
     @ApiResponse({ status: 401, description: 'Não autorizado' })
-    async findAll(): Promise<CarteiraResponseDto[]> {
-        const carteiras = await this.findAllCarteirasUseCase.execute({});
+    @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número da página' })
+    @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Quantidade de registros por página' })
+    async findAll(
+        @Query('page') page?: number,
+        @Query('limit') limit?: number
+    ) {
+        const carteiras = await this.findAllCarteirasUseCase.execute({ page, limit });
         return CarteiraResponseDto.fromEntities(carteiras);
     }
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Get(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Buscar uma carteira', description: 'Retorna uma carteira com os dados fornecidos' })
     @ApiResponse({ status: 200, description: 'Carteira retornada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
@@ -56,6 +73,7 @@ export class CarteiraController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Put(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Atualizar uma carteira', description: 'Atualiza uma carteira com os dados fornecidos' })
     @ApiResponse({ status: 200, description: 'Carteira atualizada com sucesso', type: CarteiraResponseDto })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
@@ -67,6 +85,7 @@ export class CarteiraController {
 
     @Auth('MASTER', 'ADMIN', 'USER')
     @Delete(':id')
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Deletar uma carteira', description: 'Deleta uma carteira com os dados fornecidos' })
     @ApiResponse({ status: 204, description: 'Carteira deletada com sucesso' })
     @ApiResponse({ status: 400, description: 'Requisição inválida' })
