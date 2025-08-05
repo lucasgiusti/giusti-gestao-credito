@@ -36,7 +36,6 @@ export class ParteProcesso {
         this._cedente = props.cedente;
     }
 
-    // Getters
     get id(): string | undefined {
         return this._id;
     }
@@ -89,20 +88,23 @@ export class ParteProcesso {
         return parteProcesso;
     }
 
-    // Métodos de domínio
     update({ cedenteId, percentual, parteProcessoExists }: { cedenteId?: string, percentual?: number, parteProcessoExists: ParteProcesso | null }): void {
         if (parteProcessoExists && parteProcessoExists.id !== this.id) {
             throw new Error('invalid.parteProcessoExists');
         }
-        if (cedenteId) {
-            this._cedenteId = cedenteId;
-        }
-        if (percentual) {
-            this._percentual = percentual;
-        }
 
+        this.updateCedenteId(cedenteId);
+        this.updatePercentual(percentual);
         this.calculateValor(this._processo.valorHomologado);
+    }
 
+    updateCedenteId(cedenteId: string): void {
+        this._cedenteId = cedenteId;
+        this._updatedAt = new Date();
+    }
+
+    updatePercentual(percentual: number): void {
+        this._percentual = percentual;
         this._updatedAt = new Date();
     }
 

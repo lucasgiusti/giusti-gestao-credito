@@ -41,7 +41,6 @@ export class Processo {
         this._updatedAt = props.updatedAt;
     }
 
-    // Getters
     get id(): string | undefined {
         return this._id;
     }
@@ -104,33 +103,51 @@ export class Processo {
         });
     }
     
-    // Métodos de domínio
     update({ numero, carteiraId, valorPedido, valorHomologado, tipo, processoExists }: { numero?: string, carteiraId?: string, valorPedido?: number, valorHomologado?: number, tipo?: TipoProcesso, processoExists?: Processo | null }): void {
         if (processoExists && processoExists.id !== this.id) {
             throw new Error('invalid.processo.numero.exists');
         }
 
+        this.updateNumero(numero);
+        this.updateCarteiraId(carteiraId);
+        this.updateValorPedido(valorPedido);
+        this.updateValorHomologado(valorHomologado);
+        this.updateTipo(tipo);
+    }
+
+    updateNumero(numero: string): void {
         if (numero !== undefined && numero !== null && numero.trim() !== '') {
             this._numero = numero;
+            this._updatedAt = new Date();
         }
+    }
 
+    updateCarteiraId(carteiraId: string): void {
         if (carteiraId) {
             this._carteiraId = carteiraId;
+            this._updatedAt = new Date();
         }
+    }
 
+    updateValorPedido(valorPedido: number): void {
         if (valorPedido) {
             this._valorPedido = valorPedido;
+            this._updatedAt = new Date();
         }
+    }
 
+    updateValorHomologado(valorHomologado: number): void {
         if (valorHomologado) {
             this._valorHomologado = valorHomologado;
+            this._updatedAt = new Date();
         }
+    }
 
+    updateTipo(tipo: TipoProcesso): void {
         if (tipo) {
             this._tipo = tipo;
+            this._updatedAt = new Date();
         }
-
-        this._updatedAt = new Date();
     }
 
     canBeDeleted(existsPartes: boolean): boolean {

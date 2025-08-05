@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from 'src/infraestructure/config/supabase.config';
-import { DomainEvent } from 'src/domain/events/domain-event.interface';
+import { DomainEvent } from 'src/application/interfaces/common/domain-event.interface';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
 

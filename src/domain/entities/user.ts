@@ -46,7 +46,6 @@ export class User {
         this._deletedAt = props.deletedAt;
     }
 
-    // Getters
     get id(): string | undefined {
         return this._id;
     }
@@ -83,17 +82,16 @@ export class User {
         return this._deletedAt;
     }
 
-    // Métodos de domínio
     activate(): void {
-        this._status = UserStatus.ACTIVE;
+        this.updateStatus(UserStatus.ACTIVE);
     }
 
     deactivate(): void {
-        this._status = UserStatus.INACTIVE;
+        this.updateStatus(UserStatus.INACTIVE);
     }
 
     changeRole(role: UserRole): void {
-        this._userRole = role;
+        this.updateUserRole(role);
     }
 
     isActive(): boolean {
@@ -108,11 +106,7 @@ export class User {
         return this._userRole === UserRole.MASTER;
     }
 
-    // Factory method para criar um novo usuário a partir de um usuário autenticado
-    static createFromAuthUser({ name, email, authServiceUserId, userExists }: { name: string, email: string, authServiceUserId: string, userExists?: User | null }): User {
-      if (userExists) {
-        throw new Error('invalid.user.already.exists');
-      }
+    static createFromAuthUser({ name, email, authServiceUserId }: { name: string, email: string, authServiceUserId: string }): User {
         return new User({
             name,
             email,
@@ -120,53 +114,34 @@ export class User {
         });
     }
 
-    update({ updatedBy, name, status, userRole }: { updatedBy: User, name?: string, status?: UserStatus, userRole?: UserRole }): void {
-      // Regra 1: Usuários USER não podem alterar usuários
-      if (updatedBy.userRole === UserRole.USER) {
-        throw new UnauthorizedException('unauthorized.user.cannot.update.user');
-      }
-    
-      // Regra 2: Usuários MASTER não podem ter seu userRole e status alterados
-      if (this.isMaster() && ((status !== undefined && status !== UserStatus.ACTIVE) || (userRole !== undefined && userRole !== UserRole.MASTER))) {
-        throw new UnauthorizedException('unauthorized.master.cannot.update.user.role.or.status');
-      }
-
-      if (userRole !== undefined && this.id === updatedBy.id && updatedBy.userRole !== userRole) {
-        throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.role');
-      }
-
-      if (status !== undefined && this.id === updatedBy.id && updatedBy.status !== status) {
-        throw new UnauthorizedException('unauthorized.user.cannot.update.yourself.status');
-      }
-    
-      if (name !== undefined && name !== null && name.trim() !== '') {
-        this._name = name;
-      }
-    
-      if (status !== undefined && !this.isMaster()) {
-        this._status = status;
-      }
-    
-      if (userRole !== undefined && !this.isMaster()) {
-        this._userRole = userRole;
-      }
-
-      this._updatedAt = new Date();
+    update({ name, status, userRole }: { name?: string, status?: UserStatus, userRole?: UserRole }): void {
+      this.updateName(name);
+      this.updateStatus(status);
+      this.updateUserRole(userRole);
     }
 
-    delete({ updatedBy }: { updatedBy: User }): void {
-      if (updatedBy.userRole === UserRole.USER) {
-        throw new UnauthorizedException('unauthorized.user.cannot.delete.user');
-      }
+    updateName(name: string): void {
+        if (name !== undefined && name !== null && name.trim() !== '') {
+            this._name = name;
+            this._updatedAt = new Date();
+        }
+    }
 
-      if (this.id === updatedBy.id) {
-        throw new UnauthorizedException('unauthorized.user.cannot.delete.yourself');
-      }
+    updateStatus(status: UserStatus): void {
+        if (status !== undefined && !this.isMaster()) {
+            this._status = status;
+            this._updatedAt = new Date();
+        }
+    }
 
-      if (this.isMaster()) {
-        throw new UnauthorizedException('unauthorized.master.cannot.delete.user');
-      }
+    updateUserRole(userRole: UserRole): void {
+        if (userRole !== undefined && !this.isMaster()) {
+            this._userRole = userRole;
+            this._updatedAt = new Date();
+        }
+    }
 
+    delete(): void {
       this._deletedAt = new Date();
     }
 }

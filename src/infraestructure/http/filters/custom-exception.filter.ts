@@ -33,6 +33,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
         case 'Unauthorized':
           customStatus = HttpStatus.UNAUTHORIZED; // 401
           break;
+        case 'unauthorized':
+          customStatus = HttpStatus.UNAUTHORIZED; // 401
+          break;
         default:
           customStatus = status;
           break;

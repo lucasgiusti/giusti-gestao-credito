@@ -37,11 +37,13 @@ import { DeleteCedenteUseCase } from "src/application/use-cases/cedente/delete-c
 import { DeleteCarteiraUseCase } from "src/application/use-cases/carteira/delete-carteira.use-case";
 import { FindAllPartesProcessoUseCase } from "src/application/use-cases/parte-processo/find-all-partes-processo.use-case";
 import { ImportProcessoCsvUseCase } from "src/application/use-cases/processo/import-processo-csv.use-case";
+import { ValidationsModule } from "src/application/validations/validations.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([]),
         SupabaseModule,
+        ValidationsModule,
     ],
     providers: [
         EventBusService,

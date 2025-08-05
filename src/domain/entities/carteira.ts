@@ -24,7 +24,6 @@ export class Carteira {
         this._updatedAt = props.updatedAt;
     }
 
-    // Getters
     get id(): string | undefined {
         return this._id;
     }
@@ -54,17 +53,23 @@ export class Carteira {
         });
     }
 
-    // Métodos de domínio
     update({ nome, codigo }: { nome: string, codigo: string }): void {
+        this.updateNome(nome);
+        this.updateCodigo(codigo);
+    }
+
+    updateNome(nome: string): void {
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
             this._nome = nome;
+            this._updatedAt = new Date();
         }
-        
+    }
+
+    updateCodigo(codigo: string): void {
         if (codigo !== undefined && codigo !== null && codigo.trim() !== '') {
             this._codigo = codigo;
+            this._updatedAt = new Date();
         }
-
-        this._updatedAt = new Date();
     }
 
     canBeDeleted(existsProcessos: boolean): boolean {

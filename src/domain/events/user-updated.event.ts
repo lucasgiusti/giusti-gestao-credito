@@ -1,4 +1,4 @@
-import { DomainEvent } from './domain-event.interface';
+import { DomainEvent } from '../../application/interfaces/common/domain-event.interface';
 import { User } from '../entities/user';
 
 export class UserUpdatedEvent implements DomainEvent {

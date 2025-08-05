@@ -23,7 +23,6 @@ export class Cedente {
         this._updatedAt = props.updatedAt;
     }
 
-    // Getters
     get id(): string | undefined {
         return this._id;
     }
@@ -44,24 +43,26 @@ export class Cedente {
         return this._updatedAt;
     }
 
-    // Métodos de domínio
     update({ nome, documento, cedenteExists }: { nome?: string, documento?: string | Documento, cedenteExists?: Cedente | null }): void {
         if (cedenteExists && cedenteExists.id !== this.id) {
             throw new Error('invalid.cedente.documento.exists');
         }
+        this.updateNome(nome);
+        this.updateDocumento(documento);
+    }
+
+    updateNome(nome: string): void {
         if (nome !== undefined && nome !== null && nome.trim() !== '') {
             this._nome = nome;
+            this._updatedAt = new Date();
         }
+    }
 
+    updateDocumento(documento: string | Documento): void {
         if (documento !== undefined && documento !== null) {
-            if (typeof documento === 'string') {
-                this._documento = DocumentoFactory.create(documento);
-            } else {
-                this._documento = documento;
-            }
+            this._documento = Cedente.createDocumento(documento);
+            this._updatedAt = new Date();
         }
-
-        this._updatedAt = new Date();
     }
 
     canBeDeleted(existsPartes: boolean): boolean {
@@ -71,15 +72,19 @@ export class Cedente {
         return true;
     }
 
-    // Factory method para criar um novo cedente
+    static createDocumento(documento: string | Documento): Documento {
+        if (typeof documento === 'string') {
+            return DocumentoFactory.create(documento);
+        }
+        return documento;
+    }
+
     static create({nome, documento, cedenteExists}: {nome: string, documento: string | Documento, cedenteExists?: Cedente | null}): Cedente {
 
         if (cedenteExists) {
             throw new Error('invalid.cedente.documento.exists');
         }
-        const documentoObj = typeof documento === 'string' 
-            ? DocumentoFactory.create(documento) 
-            : documento;
+        const documentoObj = Cedente.createDocumento(documento);
             
         return new Cedente({
             nome,
