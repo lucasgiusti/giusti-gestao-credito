@@ -71,11 +71,4 @@ export class Carteira {
             this._updatedAt = new Date();
         }
     }
-
-    canBeDeleted(existsProcessos: boolean): boolean {
-        if (existsProcessos) {
-            throw new Error('invalid.carteira.has.processos');
-        }
-        return true;
-    }
 }

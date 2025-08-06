@@ -1,6 +1,6 @@
 import { User } from "src/domain/entities/user";
 import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
-export class UserMustExistSpec implements IValidationSpec<{
+export class UserObjectMustExistSpec implements IValidationSpec<{
     targetUser: User,
   }> {
     constructor() {}

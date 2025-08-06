@@ -6,7 +6,7 @@ import { UserEmailCannotExistSpec } from "../../domain/specifications/user/user-
 import { UserCannotDeleteHimselfSpec } from "../../domain/specifications/user/user-cannot-delete-himself.spec";
 import { MasterCannotBeDeletedSpec } from "../../domain/specifications/user/master-cannot-be-deleted.spec";
 import { UpdaterCannotBeUserroleUserSpec } from "../../domain/specifications/user/updater-cannot-be-userrole-user.spec";
-import { UserMustExistSpec } from "../../domain/specifications/user/user-must-exist.spec";
+import { UserObjectMustExistSpec } from "../../domain/specifications/user/user-object-must-exist.spec";
 import { AuthenticatedUser } from "../../domain/entities/authenticated-user";
 import { User } from "../../domain/entities/user";
 import { UserRole, UserStatus } from "../../domain/entities/user";
@@ -32,12 +32,12 @@ export class UserValidationsSetup {
 
       /* UpdateUserUseCase_rules ********************************************** */
 
-      // 'invalid.usuario.nao.existe'
+      // 'notfound.usuario'
       MultiStageValidationRegistry.register(
         'UpdateUserUseCase',
         'UpdateUserUseCase_rules',
-        'invalid.usuario.nao.existe',
-        new UserMustExistSpec(),
+        'notfound.usuario',
+        new UserObjectMustExistSpec(),
         (cmd: { 
           targetUser: User
         }) => ({
@@ -99,12 +99,12 @@ export class UserValidationsSetup {
 
       /* DeleteUserUseCase_rules ********************************************** */
 
-      // 'invalid.usuario.nao.existe'
+      // 'notfound.usuario'
       MultiStageValidationRegistry.register(
         'DeleteUserUseCase',
         'DeleteUserUseCase_rules',
-        'invalid.usuario.nao.existe',
-        new UserMustExistSpec(),
+        'notfound.usuario',
+        new UserObjectMustExistSpec(),
         (cmd: { 
           targetUser: User
         }) => ({
@@ -156,12 +156,12 @@ export class UserValidationsSetup {
 
       /* FindUserByIdUseCase_rules ********************************************** */
 
-      // 'invalid.usuario.nao.existe'
+      // 'notfound.usuario'
       MultiStageValidationRegistry.register(
         'FindUserByIdUseCase',
         'FindUserByIdUseCase_rules',
-        'invalid.usuario.nao.existe',
-        new UserMustExistSpec(),
+        'notfound.usuario',
+        new UserObjectMustExistSpec(),
         (cmd: { 
           targetUser: User
         }) => ({

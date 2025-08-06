@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
-import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
+import { MultiStageValidationRegistry } from 'src/application/validations/registry/multi-stage.registry';
 
 interface DeleteCarteiraUseCaseCommand {
     id: string,
@@ -11,21 +11,28 @@ export class DeleteCarteiraUseCase {
 
     constructor(
         private readonly carteiraRepository: ICarteiraRepository,
-        private readonly processoRepository: IProcessoRepository,
     ) {}
 
     async execute({
         id,
     }: DeleteCarteiraUseCaseCommand): Promise<void> {
-        const carteira = await this.carteiraRepository.findById(id);
-        if (!carteira) {
-            throw new Error('invalid.carteira.not.found');
-        }
+        // VALIDATION
+        await this.validate(id);
 
-        const existsProcessos = await this.processoRepository.existsByCarteiraId(id);
-
-        carteira.canBeDeleted(existsProcessos);
-
+        // USECASE LOGIC
         await this.carteiraRepository.delete(id);
+    }
+
+    private async validate(id: string): Promise<void> {
+        const validate = await MultiStageValidationRegistry.validate(
+            DeleteCarteiraUseCase.name,
+            `${DeleteCarteiraUseCase.name}_rules`,
+            { 
+                id,
+            }
+        );
+        if (validate.isFailure) {
+            throw new Error(validate.error);
+        }
     }
 }
