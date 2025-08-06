@@ -2,14 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
-import { AuthenticatedUser } from 'src/domain/entities/authenticated-user';
 import { MultiStageValidationRegistry } from 'src/application/validations/registry/multi-stage.registry';
-import { User } from 'src/domain/entities/user';
-
-interface DeleteUserUseCaseCommand {
-    authenticatedUser: AuthenticatedUser,
-    id: string,
-}
+import { DeleteUserCommand } from './user.command';
 
 @Injectable()
 export class DeleteUserUseCase {
@@ -19,18 +13,18 @@ export class DeleteUserUseCase {
         private readonly eventBus: EventBusService,
     ) {}
 
-    async execute({
-        authenticatedUser,
-        id,
-    }: DeleteUserUseCaseCommand): Promise<void> {
-        const user = await this.userRepository.findById(id);
+    async execute(command: DeleteUserCommand): Promise<void> {
+        const user = await this.userRepository.findById(command.id);
+        if (!user) {
+            throw new Error('notfound.user');
+        }
 
         // VALIDATION
-        await this.validate(authenticatedUser, user);
+        await this.validate(command);
 
         // USECASE LOGIC
         user.delete();
-        await this.userRepository.update(id, user);
+        await this.userRepository.update(command.id, user);
         
         // EVENT PUBLISHING
         await this.eventBus.publish(
@@ -40,14 +34,11 @@ export class DeleteUserUseCase {
         );
     }
 
-    private async validate(authenticatedUser: AuthenticatedUser, targetUser: User): Promise<void> {
+    private async validate(command: DeleteUserCommand): Promise<void> {
         const validate = await MultiStageValidationRegistry.validate(
             DeleteUserUseCase.name,
             `${DeleteUserUseCase.name}_rules`,
-            { 
-                authenticatedUser,
-                targetUser,
-            }
+            command
         );
         if (validate.isFailure) {
             throw new Error(validate.error);

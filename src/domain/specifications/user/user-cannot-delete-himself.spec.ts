@@ -4,14 +4,14 @@ import { User } from "src/domain/entities/user";
 
 export class UserCannotDeleteHimselfSpec implements IValidationSpec<{
     authenticatedUser: User,
-    targetUser: User,
+    id: string,
   }> {
     constructor(
         private readonly userRepository: IUserRepository,
     ) {}
     async isSatisfiedBy(value: {
       authenticatedUser: User,
-      targetUser: User,
+      id: string,
     }): Promise<boolean> {
 
       const updater = await this.userRepository.findByAuthServiceUserId(value.authenticatedUser.id);
@@ -19,7 +19,12 @@ export class UserCannotDeleteHimselfSpec implements IValidationSpec<{
         return false;
       }
 
-      if (value.targetUser.id === updater.id) {
+      const targetUser = await this.userRepository.findById(value.id);
+      if (!targetUser) {
+        return false;
+      }
+
+      if (targetUser.id === updater.id) {
         return false;
       }
 

@@ -1,4 +1,5 @@
 import { UnauthorizedException } from "@nestjs/common";
+import { CreateUserCommand, UpdateUserCommand } from "src/application/use-cases/user/user.command";
 
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
@@ -106,18 +107,18 @@ export class User {
         return this._userRole === UserRole.MASTER;
     }
 
-    static createFromAuthUser({ name, email, authServiceUserId }: { name: string, email: string, authServiceUserId: string }): User {
+    static createFromAuthUser(command: CreateUserCommand): User {
         return new User({
-            name,
-            email,
-            authServiceUserId,
+            name: command.name,
+            email: command.authenticatedUser.email,
+            authServiceUserId: command.authenticatedUser.id,
         });
     }
 
-    update({ name, status, userRole }: { name?: string, status?: UserStatus, userRole?: UserRole }): void {
-      this.updateName(name);
-      this.updateStatus(status);
-      this.updateUserRole(userRole);
+    update(command: UpdateUserCommand): void {
+      this.updateName(command.name);
+      this.updateStatus(command.status);
+      this.updateUserRole(command.userRole);
     }
 
     updateName(name: string): void {

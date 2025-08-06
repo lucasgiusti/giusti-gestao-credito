@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { User } from 'src/domain/entities/user';
 import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
-
-interface FindAllUsersUseCaseCommand {
-    page?: number;
-    limit?: number;
-}
+import { FindAllUsersCommand } from './user.command';
 
 @Injectable()
 export class FindAllUsersUseCase {
@@ -15,10 +11,10 @@ export class FindAllUsersUseCase {
         private readonly userRepository: IUserRepository,
     ) {}
 
-    async execute({ page, limit }: FindAllUsersUseCaseCommand): Promise<PaginatedResult<User>> {
+    async execute(command: FindAllUsersCommand): Promise<PaginatedResult<User>> {
         const paginationOptions: PaginationOptions = {
-            page: page ? Number(page) : undefined,
-            limit: limit ? Number(limit) : undefined
+            page: command.page ? Number(command.page) : undefined,
+            limit: command.limit ? Number(command.limit) : undefined
         };
         
         const users = await this.userRepository.findAll(paginationOptions);

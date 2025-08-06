@@ -12,8 +12,8 @@ export class UserEmailCannotExistSpec implements IValidationSpec<{
         return false;
       }
 
-      const user = await this.userRepository.findByEmail(value.email);
+      const targetUser = await this.userRepository.findByEmail(value.email);
   
-      return !user;
+      return !targetUser;
     }
   }

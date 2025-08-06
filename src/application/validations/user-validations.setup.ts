@@ -6,10 +6,10 @@ import { UserEmailCannotExistSpec } from "../../domain/specifications/user/user-
 import { UserCannotDeleteHimselfSpec } from "../../domain/specifications/user/user-cannot-delete-himself.spec";
 import { MasterCannotBeDeletedSpec } from "../../domain/specifications/user/master-cannot-be-deleted.spec";
 import { UpdaterCannotBeUserroleUserSpec } from "../../domain/specifications/user/updater-cannot-be-userrole-user.spec";
-import { UserObjectMustExistSpec } from "../../domain/specifications/user/user-object-must-exist.spec";
 import { AuthenticatedUser } from "../../domain/entities/authenticated-user";
 import { User } from "../../domain/entities/user";
 import { UserRole, UserStatus } from "../../domain/entities/user";
+import { CreateUserCommand, DeleteUserCommand, UpdateUserCommand } from "../use-cases/user/user.command";
 
 export class UserValidationsSetup {
     static initialize(userRepository: IUserRepository) {
@@ -22,38 +22,21 @@ export class UserValidationsSetup {
         'CreateUserUseCase_rules',
         'invalid.usuario.com.este.email.ja.existe',
         new UserEmailCannotExistSpec(userRepository),
-        (cmd: { 
-          email: string
-        }) => ({
-          email: cmd.email,
+        (cmd: CreateUserCommand) => ({
+          email: cmd.authenticatedUser.email,
         })
       );
       /* CreateUserUseCase_rules ********************************************** */
 
       /* UpdateUserUseCase_rules ********************************************** */
 
-      // 'notfound.usuario'
-      MultiStageValidationRegistry.register(
-        'UpdateUserUseCase',
-        'UpdateUserUseCase_rules',
-        'notfound.usuario',
-        new UserObjectMustExistSpec(),
-        (cmd: { 
-          targetUser: User
-        }) => ({
-          targetUser: cmd.targetUser,
-        })
-      );
-
       // 'unauthorized.usuario.com.userrole.user.nao.pode.atualizar.usuario'
       MultiStageValidationRegistry.register(
         'UpdateUserUseCase',
         'UpdateUserUseCase_rules',
         'unauthorized.usuario.com.userrole.user.nao.pode.atualizar.usuario',
-        new UpdaterCannotBeUserroleUserSpec(),
-        (cmd: {
-          authenticatedUser: AuthenticatedUser
-        }) => ({
+        new UpdaterCannotBeUserroleUserSpec(userRepository),
+        (cmd: UpdateUserCommand) => ({
           authenticatedUser: cmd.authenticatedUser,
         })
       );
@@ -64,14 +47,9 @@ export class UserValidationsSetup {
         'UpdateUserUseCase_rules',
         'unauthorized.usuario.nao.pode.atualizar.seu.userrole.or.status',
         new UserCannotUpdateHimselfSpec(userRepository),
-        (cmd: {
-          authenticatedUser: AuthenticatedUser,
-          targetUser: User,
-          userRole: UserRole,
-          status: UserStatus
-        }) => ({
+        (cmd: UpdateUserCommand) => ({
           authenticatedUser: cmd.authenticatedUser,
-          targetUser: cmd.targetUser,
+          id: cmd.id,
           userRole: cmd.userRole,
           status: cmd.status,
         })
@@ -82,45 +60,25 @@ export class UserValidationsSetup {
         'UpdateUserUseCase',
         'UpdateUserUseCase_rules',
         'unauthorized.usuario.master.nao.pode.ter.seu.userrole.or.status.alterado',
-        new MasterCannotBeUpdatedSpec(),
-        (cmd: {
-          targetUser: User,
-          userRole: UserRole,
-          status: UserStatus
-        }) => ({
-          targetUser: cmd.targetUser,
+        new MasterCannotBeUpdatedSpec(userRepository),
+        (cmd: UpdateUserCommand) => ({
+          id: cmd.id,
           userRole: cmd.userRole,
           status: cmd.status,
         })
       );
 
-      
       /* UpdateUserUseCase_rules ********************************************** */
 
       /* DeleteUserUseCase_rules ********************************************** */
-
-      // 'notfound.usuario'
-      MultiStageValidationRegistry.register(
-        'DeleteUserUseCase',
-        'DeleteUserUseCase_rules',
-        'notfound.usuario',
-        new UserObjectMustExistSpec(),
-        (cmd: { 
-          targetUser: User
-        }) => ({
-          targetUser: cmd.targetUser,
-        })
-      );
 
       // 'unauthorized.usuario.com.userrole.user.nao.pode.excluir.usuario'
       MultiStageValidationRegistry.register(
         'DeleteUserUseCase',
         'DeleteUserUseCase_rules',
         'unauthorized.usuario.com.userrole.user.nao.pode.excluir.usuario',
-        new UpdaterCannotBeUserroleUserSpec(),
-        (cmd: { 
-          authenticatedUser: AuthenticatedUser
-        }) => ({
+        new UpdaterCannotBeUserroleUserSpec(userRepository),
+        (cmd: DeleteUserCommand) => ({
           authenticatedUser: cmd.authenticatedUser,
         })
       );
@@ -131,12 +89,9 @@ export class UserValidationsSetup {
         'DeleteUserUseCase_rules',
         'unauthorized.usuario.nao.pode.excluir.ele.proprio',
         new UserCannotDeleteHimselfSpec(userRepository),
-        (cmd: { 
-          authenticatedUser: AuthenticatedUser, 
-          targetUser: User
-        }) => ({
+        (cmd: DeleteUserCommand) => ({
           authenticatedUser: cmd.authenticatedUser,
-          targetUser: cmd.targetUser,
+          id: cmd.id,
         })
       );
 
@@ -145,29 +100,11 @@ export class UserValidationsSetup {
         'DeleteUserUseCase',
         'DeleteUserUseCase_rules',
         'unauthorized.usuario.master.nao.pode.ser.excluido',
-        new MasterCannotBeDeletedSpec(),
-        (cmd: { 
-          targetUser: User
-        }) => ({
-          targetUser: cmd.targetUser,
+        new MasterCannotBeDeletedSpec(userRepository),
+        (cmd: DeleteUserCommand) => ({
+          id: cmd.id,
         })
       );
       /* DeleteUserUseCase_rules ********************************************** */
-
-      /* FindUserByIdUseCase_rules ********************************************** */
-
-      // 'notfound.usuario'
-      MultiStageValidationRegistry.register(
-        'FindUserByIdUseCase',
-        'FindUserByIdUseCase_rules',
-        'notfound.usuario',
-        new UserObjectMustExistSpec(),
-        (cmd: { 
-          targetUser: User
-        }) => ({
-          targetUser: cmd.targetUser,
-        })
-      );
-      /* FindUserByIdUseCase_rules ********************************************** */
     }
   }

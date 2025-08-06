@@ -1,14 +1,22 @@
 import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
-import { User } from "src/domain/entities/user";
+import { IUserRepository } from "src/application/interfaces/repositories/user.repository.interface";
 
 export class MasterCannotBeDeletedSpec implements IValidationSpec<{
-    targetUser: User,
+    id: string,
   }> {
-    isSatisfiedBy(value: {
-      targetUser: User,
-    }): boolean {
+    constructor(
+        private readonly userRepository: IUserRepository,
+    ) {}
+    
+    async isSatisfiedBy(value: {
+      id: string,
+    }): Promise<boolean> {
+      const targetUser = await this.userRepository.findById(value.id);
+      if (!targetUser) {
+        return false;
+      }
 
-      if (value.targetUser.isMaster()) {
+      if (targetUser.isMaster()) {
         return false;
       }
 

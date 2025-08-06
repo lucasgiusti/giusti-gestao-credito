@@ -4,7 +4,7 @@ import { User, UserRole, UserStatus } from "src/domain/entities/user";
 
 export class UserCannotUpdateHimselfSpec implements IValidationSpec<{
     authenticatedUser: User,
-    targetUser: User,
+    id: string,
     userRole?: UserRole,
     status?: UserStatus,
   }> {
@@ -14,7 +14,7 @@ export class UserCannotUpdateHimselfSpec implements IValidationSpec<{
     
     async isSatisfiedBy(value: {
       authenticatedUser: User,
-      targetUser: User,
+      id: string,
       userRole?: UserRole,
       status?: UserStatus,
     }): Promise<boolean> {
@@ -23,11 +23,16 @@ export class UserCannotUpdateHimselfSpec implements IValidationSpec<{
         return false;
       }
 
-      if (value.targetUser.id === updater.id && value.userRole !== undefined && value.targetUser.userRole !== value.userRole) {
+      const targetUser = await this.userRepository.findById(value.id);
+      if (!targetUser) {
         return false;
       }
 
-      if (value.targetUser.id === updater.id && value.status !== undefined && value.targetUser.status !== value.status) {
+      if (targetUser.id === updater.id && value.userRole !== undefined && targetUser.userRole !== value.userRole) {
+        return false;
+      }
+
+      if (targetUser.id === updater.id && value.status !== undefined && targetUser.status !== value.status) {
         return false;
       }
 
