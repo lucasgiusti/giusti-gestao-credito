@@ -1,58 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { ParteProcesso } from 'src/domain/entities/parte-processo';
 import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
-import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface UpdateParteProcessoUseCaseCommand {
+export interface IUpdateParteProcessoUseCaseCommand {
     id: string;
+    processoId: string;
     cedenteId: string;
     percentual: number;
 }
 
 @Injectable()
-export class UpdateParteProcessoUseCase {
+export class UpdateParteProcessoUseCase extends BaseUseCase<IUpdateParteProcessoUseCaseCommand, ParteProcesso> {
 
     constructor(
         private parteProcessoRepository: IParteProcessoRepository,
-        private cedenteRepository: ICedenteRepository,
         private processoRepository: IProcessoRepository
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        id,
-        cedenteId,
-        percentual
-    }: UpdateParteProcessoUseCaseCommand): Promise<ParteProcesso> {
-        const parteProcesso = await this.parteProcessoRepository.findById(id);
-        if (!parteProcesso) {
-            throw new Error('notfound.parteProcesso');
-        }
+    protected get validationId(): string {
+        return ValidationIdentifiers.PARTE_PROCESSO_UPDATE;
+    }
 
-        const cedente = await this.cedenteRepository.findById(cedenteId);
-        if (!cedente) {
-            throw new Error('notfound.cedente');
-        }
-
-        const processo = await this.processoRepository.findById(parteProcesso.processoId);
+    async execute(command: IUpdateParteProcessoUseCaseCommand): Promise<ParteProcesso> {
+        const processo = await this.processoRepository.findById(command.processoId);
         if (!processo) {
             throw new Error('notfound.processo');
         }
-        
-        const parteProcessoExists = await this.parteProcessoRepository.findByProcessoIdAndCedenteId(
-            parteProcesso.processoId, 
-            cedenteId
-        );
 
-        parteProcesso.update({
-            cedenteId,
-            percentual,
-            parteProcessoExists
-        });
+        // VALIDATION
+        await this.validate(command);
 
-        processo.updateParteProcesso(parteProcesso);
-        processo.validatePartes();
+        const parteProcessoProps = {
+            ...command,
+        };
+
+        const parteProcessoObj = processo.updateParteProcesso(parteProcessoProps);
         
-        return await this.parteProcessoRepository.update(id, parteProcesso);
+        const parteProcessoUpdated = await this.parteProcessoRepository.update(command.id, parteProcessoObj);
+
+        // RETURN
+        return parteProcessoUpdated;
     }
 }

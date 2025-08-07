@@ -1,31 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
-import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface DeleteCedenteUseCaseCommand {
+export interface IDeleteCedenteUseCaseCommand {
     id: string,
 }
 
 @Injectable()
-export class DeleteCedenteUseCase {
+export class DeleteCedenteUseCase extends BaseUseCase<IDeleteCedenteUseCaseCommand, void> {
 
     constructor(
         private readonly cedenteRepository: ICedenteRepository,
-        private readonly parteProcessoRepository: IParteProcessoRepository,
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        id,
-    }: DeleteCedenteUseCaseCommand): Promise<void> {
-        const cedente = await this.cedenteRepository.findById(id);
+    protected get validationId(): string {
+        return ValidationIdentifiers.CEDENTE_DELETE;
+    }
+
+    async execute(command: IDeleteCedenteUseCaseCommand): Promise<void> {
+        const cedente = await this.cedenteRepository.findById(command.id);
         if (!cedente) {
-            throw new Error('invalid.cedente.not.found');
+            throw new Error('notfound.cedente');
         }
 
-        const existsPartes = await this.parteProcessoRepository.existsByCedenteId(id);
+        // VALIDATION
+        await this.validate(command);
 
-        cedente.canBeDeleted(existsPartes);
-
-        await this.cedenteRepository.delete(id);
+        // USECASE LOGIC
+        await this.cedenteRepository.delete(command.id);
     }
 }

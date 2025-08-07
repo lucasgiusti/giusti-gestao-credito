@@ -1,8 +1,8 @@
-import { IValidationSpec } from 'src/application/interfaces/common/validation-spec.interface';
+import { IValidationSpecification } from 'src/application/interfaces/common/validation-specification.interface';
 
 interface IValidationRule<T> {
   readonly name: string;
-  readonly spec: IValidationSpec<any>;
+  readonly spec: IValidationSpecification<any>;
   getValue(command: T, context?: any): any;
 }
 
@@ -22,7 +22,7 @@ export class MultiStageValidationRegistry {
     useCase: string,
     stage: string,
     name: string,
-    spec: IValidationSpec<any>,
+    spec: IValidationSpecification<any>,
     getValue: (command: T, context?: any) => any
   ): void {
     if (!this.rules.has(useCase)) {
@@ -85,5 +85,22 @@ export class MultiStageValidationRegistry {
    */
   static clear(): void {
     this.rules.clear();
+  }
+}
+
+export class ValidationHelper {
+  static registerValidation<TCommand, TParams>(
+    validationId: string,
+      errorMessage: string,
+      specification: any,
+      paramExtractor: (cmd: TCommand) => TParams
+  ): void {
+      MultiStageValidationRegistry.register(
+        validationId,
+        `${validationId}_rules`,
+        errorMessage,
+        specification,
+        paramExtractor
+    );
   }
 }

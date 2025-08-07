@@ -1,27 +1,27 @@
-import type { Processo } from "./processo";
 import type { Cedente } from "./cedente";
+import { Processo } from "./processo";
 
-type ParteProcessoProps = {
+export type ParteProcessoProps = {
     id?: string;
     processoId: string;
     cedenteId: string;
-    valor: number;
+    valor?: number;
     percentual: number;
     createdAt?: Date;
     updatedAt?: Date;
-    processo?: Processo;
     cedente?: Cedente;
+    processo?: Processo;
 }
 export class ParteProcesso {
     private _id?: string;
     private _processoId: string;
     private _cedenteId: string;
-    private _valor: number;
+    private _valor?: number;
     private _percentual: number;
     private _createdAt?: Date;
     private _updatedAt?: Date;
-    private _processo?: Processo;
     private _cedente?: Cedente;
+    private _processo?: Processo;
     
 
     constructor(props: ParteProcessoProps) {
@@ -32,8 +32,8 @@ export class ParteProcesso {
         this._percentual = props.percentual;
         this._createdAt = props.createdAt;
         this._updatedAt = props.updatedAt;
-        this._processo = props.processo;
         this._cedente = props.cedente;
+        this._processo = props.processo;
     }
 
     get id(): string | undefined {
@@ -64,23 +64,19 @@ export class ParteProcesso {
         return this._updatedAt;
     }
 
-    get processo(): Processo | undefined {
-        return this._processo;
-    }
-
     get cedente(): Cedente | undefined {
         return this._cedente;
     }
 
-    static create({processoId, cedenteId, percentual, valorHomologado, parteProcessoExists}: {processoId: string, cedenteId: string, percentual: number, valorHomologado: number, parteProcessoExists: ParteProcesso | null}): ParteProcesso {
-        if (parteProcessoExists) {
-            throw new Error('invalid.parteProcessoExists');
-        }
+    get processo(): Processo | undefined {
+        return this._processo;
+    }
+
+    static create({processoId, cedenteId, percentual}: ParteProcessoProps, valorHomologado: number): ParteProcesso {
         const parteProcesso = new ParteProcesso({
             processoId,
             cedenteId,
-            percentual,
-            valor: 0,
+            percentual
         });
 
         parteProcesso.calculateValor(valorHomologado);
@@ -88,14 +84,11 @@ export class ParteProcesso {
         return parteProcesso;
     }
 
-    update({ cedenteId, percentual, parteProcessoExists }: { cedenteId?: string, percentual?: number, parteProcessoExists: ParteProcesso | null }): void {
-        if (parteProcessoExists && parteProcessoExists.id !== this.id) {
-            throw new Error('invalid.parteProcessoExists');
-        }
-
+    update({cedenteId, percentual}: ParteProcessoProps, valorHomologado: number): ParteProcesso {
         this.updateCedenteId(cedenteId);
         this.updatePercentual(percentual);
-        this.calculateValor(this._processo.valorHomologado);
+        this.calculateValor(valorHomologado);
+        return this;
     }
 
     updateCedenteId(cedenteId: string): void {
@@ -110,13 +103,5 @@ export class ParteProcesso {
 
     calculateValor(valorHomologado: number): void {
         this._valor = Math.round((this._percentual * valorHomologado) / 100);
-    }
-
-    canBeDeleted(): boolean {
-        // TODO: Implementar lógica de exclusão
-        // Deverá ser verificado se o processo possui algum registro (partes, documentos, etc) associado
-        // Se houver, deve ser lançada uma exceção
-        // Uma parte de processo que já foi compara não pode ser excluida
-        return true;
     }
 }

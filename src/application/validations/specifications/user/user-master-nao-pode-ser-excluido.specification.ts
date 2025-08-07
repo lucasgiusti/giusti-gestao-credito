@@ -1,7 +1,7 @@
-import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
+import { IValidationSpecification } from "src/application/interfaces/common/validation-specification.interface";
 import { IUserRepository } from "src/application/interfaces/repositories/user.repository.interface";
 
-export class MasterCannotBeDeletedSpec implements IValidationSpec<{
+export class UserMasterNaoPodeSerExcluidoSpecification implements IValidationSpecification<{
     id: string,
   }> {
     constructor(

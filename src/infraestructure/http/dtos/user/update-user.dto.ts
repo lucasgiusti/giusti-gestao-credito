@@ -3,18 +3,23 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { UserRole, UserStatus } from "src/domain/entities/user";
 
 export class UpdateUserDto {
-    @ApiPropertyOptional({ required: false, example: 'Nome do usuário' })
+    @ApiProperty({ example: 'Nome do usuário' })
     @IsString({ message: 'O nome do usuário deve ser uma string' })
     @IsOptional()
-    name?: string;
+    name: string;
 
-    @ApiPropertyOptional({ required: false, examples: ['ACTIVE', 'INACTIVE'], example: 'ACTIVE' })
+    @ApiProperty({ example: 'Email do usuário' })
+    @IsString({ message: 'O email do usuário deve ser uma string' })
+    @IsNotEmpty()
+    email: string;
+
+    @ApiProperty({ examples: ['ACTIVE', 'INACTIVE'], example: 'ACTIVE' })
     @IsEnum(UserStatus, { message: 'O status do usuário deve ser uma string' })
     @IsOptional()
-    status?: UserStatus;
+    status: UserStatus;
 
-    @ApiPropertyOptional({ required: false, examples: ['ADMIN', 'USER'], example: 'ADMIN' })
+    @ApiProperty({ examples: ['ADMIN', 'USER'], example: 'ADMIN' })
     @IsEnum(UserRole, { message: 'O role do usuário deve ser uma string' })
     @IsOptional()
-    userRole?: UserRole;
+    userRole: UserRole;
 }

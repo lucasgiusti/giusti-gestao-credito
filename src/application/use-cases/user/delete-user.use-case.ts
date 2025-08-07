@@ -2,18 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
-import { MultiStageValidationRegistry } from 'src/application/validations/registry/multi-stage.registry';
-import { DeleteUserCommand } from './user.command';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
+
+export interface IDeleteUserUseCaseCommand {
+    authServiceUserId: string,
+    id: string,
+}
 
 @Injectable()
-export class DeleteUserUseCase {
+export class DeleteUserUseCase extends BaseUseCase<IDeleteUserUseCaseCommand, void> {
 
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly eventBus: EventBusService,
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute(command: DeleteUserCommand): Promise<void> {
+    protected get validationId(): string {
+        return ValidationIdentifiers.USER_DELETE;
+    }
+
+    async execute(command: IDeleteUserUseCaseCommand): Promise<void> {
         const user = await this.userRepository.findById(command.id);
         if (!user) {
             throw new Error('notfound.user');
@@ -32,16 +43,5 @@ export class DeleteUserUseCase {
                 authServiceUserId: user.authServiceUserId
             })
         );
-    }
-
-    private async validate(command: DeleteUserCommand): Promise<void> {
-        const validate = await MultiStageValidationRegistry.validate(
-            DeleteUserUseCase.name,
-            `${DeleteUserUseCase.name}_rules`,
-            command
-        );
-        if (validate.isFailure) {
-            throw new Error(validate.error);
-        }
     }
 }

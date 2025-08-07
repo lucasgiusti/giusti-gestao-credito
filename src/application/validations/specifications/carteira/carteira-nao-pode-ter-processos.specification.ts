@@ -1,7 +1,7 @@
-import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
+import { IValidationSpecification } from "src/application/interfaces/common/validation-specification.interface";
 import { IProcessoRepository } from "src/application/interfaces/repositories/processo.repository.interface";
 
-export class CarteiraCannotHaveProcessesSpec implements IValidationSpec<{
+export class CarteiraNaoPodeTerProcessosSpecification implements IValidationSpecification<{
     id: string,
   }> {
     constructor(private readonly processoRepository: IProcessoRepository) {}

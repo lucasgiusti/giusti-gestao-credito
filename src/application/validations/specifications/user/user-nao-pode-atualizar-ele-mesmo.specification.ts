@@ -1,8 +1,8 @@
-import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
+import { IValidationSpecification } from "src/application/interfaces/common/validation-specification.interface";
 import { IUserRepository } from "src/application/interfaces/repositories/user.repository.interface";
 import { User, UserRole, UserStatus } from "src/domain/entities/user";
 
-export class UserCannotUpdateHimselfSpec implements IValidationSpec<{
+export class UserNaoPodeAtualizarEleMesmoSpecification implements IValidationSpecification<{
     authenticatedUser: User,
     id: string,
     userRole?: UserRole,

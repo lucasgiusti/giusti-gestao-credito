@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Cedente as CedenteTypeOrm } from '../entities/cedente.entity';
 import { Cedente } from "src/domain/entities/cedente";
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
-import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginationOptions, IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { TypeOrmCedenteMapper } from '../mapper/typeorm-cedente.mapper';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class TypeOrmCedenteRepository implements ICedenteRepository {
     return TypeOrmCedenteMapper.toDomain(cedente);
   }
 
-  async findAll(options?: PaginationOptions): Promise<PaginatedResult<Cedente>> {
+  async findAll(options?: IPaginationOptions): Promise<IPaginatedResult<Cedente>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;

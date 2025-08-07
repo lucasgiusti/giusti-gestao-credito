@@ -1,4 +1,4 @@
-import { ParteProcesso } from "./parte-processo";
+import { ParteProcesso, ParteProcessoProps } from "./parte-processo";
 
 export enum TipoProcesso {
     PRECATORIO = 'PRECATORIO',
@@ -13,7 +13,7 @@ type ProcessoProps = {
     valorPedido: number;
     valorHomologado: number;
     tipo: TipoProcesso;
-    partes: ParteProcesso[];
+    partes?: ParteProcesso[];
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -24,7 +24,7 @@ export class Processo {
     private _valorPedido: number;
     private _valorHomologado: number;
     private _tipo: TipoProcesso;
-    private _partes: ParteProcesso[];
+    private _partes?: ParteProcesso[];
     private _createdAt?: Date;
     private _updatedAt?: Date;
     
@@ -77,42 +77,42 @@ export class Processo {
         return this._updatedAt;
     }
 
-    static create({numero, carteiraId, valorPedido, valorHomologado, tipo, processoExists}: {numero: string, carteiraId: string, valorPedido: number, valorHomologado: number, tipo: TipoProcesso, processoExists?: Processo | null}): Processo {
-        if (processoExists) {
-            throw new Error('invalid.processo.numero.exists');
-        }
+    static create({numero, carteiraId, valorPedido, valorHomologado, tipo}: ProcessoProps): Processo {
         return new Processo({
             numero,
             carteiraId,
             valorPedido,
             valorHomologado,
             tipo,
-            partes: [],
         });
     }
 
-    addParteProcesso(parteProcesso: ParteProcesso): void {
-        this._partes.push(parteProcesso);
+    addParteProcesso({processoId, cedenteId, percentual}: ParteProcessoProps): ParteProcesso {
+        const parteProcessoCreated = ParteProcesso.create({processoId, cedenteId, percentual}, this.valorHomologado)
+        this._partes.push(parteProcessoCreated);
+
+        return parteProcessoCreated;
     }
 
-    updateParteProcesso(parteProcesso: ParteProcesso): void {
-        this._partes.find((parte) => parte.id === parteProcesso.id).update({
-            cedenteId: parteProcesso.cedenteId,
-            percentual: parteProcesso.percentual,
-            parteProcessoExists: parteProcesso
-        });
+    updateParteProcesso({id, cedenteId, percentual}: ParteProcessoProps): ParteProcesso {
+        const parteProcessoUpdated = this._partes.find((parte) => parte.id === id).update({processoId: this.id, cedenteId, percentual}, this.valorHomologado);
+        return parteProcessoUpdated;
+    }
+
+    deleteParteProcesso(id: string): ParteProcesso {
+        const parteProcessoRemoved = this._partes.find((parte) => parte.id === id);
+        this._partes = this._partes.filter((parte) => parte.id !== id);
+        return parteProcessoRemoved;
     }
     
-    update({ numero, carteiraId, valorPedido, valorHomologado, tipo, processoExists }: { numero?: string, carteiraId?: string, valorPedido?: number, valorHomologado?: number, tipo?: TipoProcesso, processoExists?: Processo | null }): void {
-        if (processoExists && processoExists.id !== this.id) {
-            throw new Error('invalid.processo.numero.exists');
-        }
-
+    update({numero, carteiraId, valorPedido, valorHomologado, tipo}: ProcessoProps): Processo {
         this.updateNumero(numero);
         this.updateCarteiraId(carteiraId);
         this.updateValorPedido(valorPedido);
         this.updateValorHomologado(valorHomologado);
         this.updateTipo(tipo);
+
+        return this;
     }
 
     updateNumero(numero: string): void {
@@ -148,21 +148,5 @@ export class Processo {
             this._tipo = tipo;
             this._updatedAt = new Date();
         }
-    }
-
-    canBeDeleted(existsPartes: boolean): boolean {
-        if (existsPartes) {
-            throw new Error('invalid.processo.exists.partes');
-        }
-        return true;
-    }
-
-    validatePartes(): boolean {
-        const somaPercentuais = this.partes.reduce((acc, parte) => acc + parte.percentual, 0);
-        
-        if (somaPercentuais > 100) {
-            throw new Error('invalid.processo.partes.percentual');
-        }
-        return true;
     }
 }

@@ -1,7 +1,3 @@
-import { UnauthorizedException } from "@nestjs/common";
-import { User, UserRole } from "./user";
-import { CreateCarteiraCommand, UpdateCarteiraCommand } from "src/application/use-cases/carteira/carteira.command";
-
 type CarteiraProps = {
     id?: string;
     nome: string;
@@ -45,18 +41,18 @@ export class Carteira {
         return this._updatedAt;
     }
 
-    static create(command: CreateCarteiraCommand): Carteira {
+    static create({nome, codigo}: CarteiraProps): Carteira {
         return new Carteira({
-            nome: command.nome,
-            codigo: command.codigo,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            nome,
+            codigo,
         });
     }
 
-    update(command: UpdateCarteiraCommand): void {
-        this.updateNome(command.nome);
-        this.updateCodigo(command.codigo);
+    update({ nome, codigo }: CarteiraProps): Carteira {
+        this.updateNome(nome);
+        this.updateCodigo(codigo);
+
+        return this;
     }
 
     updateNome(nome: string): void {

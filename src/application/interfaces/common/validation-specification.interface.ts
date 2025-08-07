@@ -1,4 +1,4 @@
-export interface IValidationSpec<T> {
+export interface IValidationSpecification<T> {
     /**
      * Verifica se o valor satisfaz a especificação
      * @param value Valor a ser validado

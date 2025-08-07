@@ -1,8 +1,8 @@
-import { IValidationSpec } from "src/application/interfaces/common/validation-spec.interface";
+import { IValidationSpecification } from "src/application/interfaces/common/validation-specification.interface";
 import { User, UserRole, UserStatus } from "src/domain/entities/user";
 import { IUserRepository } from "src/application/interfaces/repositories/user.repository.interface";
 
-export class MasterCannotBeUpdatedSpec implements IValidationSpec<{
+export class UserMasterNaoPodeSerAlteradoSpecification implements IValidationSpecification<{
     id: string,
     userRole?: UserRole,
     status?: UserStatus,

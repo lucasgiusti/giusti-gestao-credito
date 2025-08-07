@@ -1,56 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { Processo, TipoProcesso } from 'src/domain/entities/processo';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
-import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface UpdateProcessoUseCaseCommand {
+export interface IUpdateProcessoUseCaseCommand {
     id: string;
-    numero?: string;
-    carteiraId?: string;
-    valorPedido?: number;
-    valorHomologado?: number;
-    tipo?: TipoProcesso;
+    numero: string;
+    carteiraId: string;
+    valorPedido: number;
+    valorHomologado: number;
+    tipo: TipoProcesso;
 }
 
 @Injectable()
-export class UpdateProcessoUseCase {
+export class UpdateProcessoUseCase extends BaseUseCase<IUpdateProcessoUseCaseCommand, Processo> {
 
     constructor(
         private processoRepository: IProcessoRepository,
-        private carteiraRepository: ICarteiraRepository
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        id,
-        numero,
-        carteiraId,
-        valorPedido,
-        valorHomologado,
-        tipo
-    }: UpdateProcessoUseCaseCommand): Promise<Processo> {
-        const processo = await this.processoRepository.findById(id);
+    protected get validationId(): string {
+        return ValidationIdentifiers.PROCESSO_UPDATE;
+    }
+
+    async execute(command: IUpdateProcessoUseCaseCommand): Promise<Processo> {
+        const processo = await this.processoRepository.findById(command.id);
         if (!processo) {
             throw new Error('notfound.processo');
         }
 
-        if (carteiraId) {
-            const carteira = await this.carteiraRepository.findById(carteiraId);
-            if (!carteira) {
-                throw new Error('notfound.carteira');
-            }
-        }
+        // VALIDATION
+        await this.validate(command);
 
-        const processoExists = await this.processoRepository.findByNumero(numero);
+        const processoProps = {
+            ...command,
+        };
 
-        processo.update({
-            numero,
-            carteiraId,
-            valorPedido,
-            valorHomologado,
-            tipo,
-            processoExists
-        });
+        const processoObj = processo.update(processoProps);
 
-        return await this.processoRepository.update(id, processo);
+        const processoUpdated = await this.processoRepository.update(command.id, processoObj);
+
+        // RETURN
+        return processoUpdated;
     }
 }

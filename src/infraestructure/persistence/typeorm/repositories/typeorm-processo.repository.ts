@@ -5,7 +5,7 @@ import { Processo as ProcessoTypeOrm } from '../entities/processo.entity';
 import { Processo } from "src/domain/entities/processo";
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
 import { TypeOrmProcessoMapper } from '../mapper/typeorm-processo.mapper';
-import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginationOptions, IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 @Injectable()
 export class TypeOrmProcessoRepository implements IProcessoRepository {
@@ -49,7 +49,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
     return TypeOrmProcessoMapper.toDomain(processo);
   }
 
-  async findByCarteiraId(carteiraId: string, options?: PaginationOptions): Promise<PaginatedResult<Processo>> {
+  async findByCarteiraId(carteiraId: string, options?: IPaginationOptions): Promise<IPaginatedResult<Processo>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;
@@ -75,7 +75,7 @@ export class TypeOrmProcessoRepository implements IProcessoRepository {
     };
   }
 
-  async findAll(options?: PaginationOptions): Promise<PaginatedResult<Processo>> {
+  async findAll(options?: IPaginationOptions): Promise<IPaginatedResult<Processo>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;

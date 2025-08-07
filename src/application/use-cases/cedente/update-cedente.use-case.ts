@@ -1,36 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { Cedente } from 'src/domain/entities/cedente';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface UpdateCedenteUseCaseCommand {
+export interface IUpdateCedenteUseCaseCommand {
     id: string,
     nome: string,
     documento: string,
 }
-
 @Injectable()
-export class UpdateCedenteUseCase {
+export class UpdateCedenteUseCase extends BaseUseCase<IUpdateCedenteUseCaseCommand, Cedente> {
 
     constructor(
         private cedenteRepository: ICedenteRepository
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        id,
-        nome,
-        documento,
-    }: UpdateCedenteUseCaseCommand): Promise<Cedente> {
+    protected get validationId(): string {
+        return ValidationIdentifiers.CEDENTE_UPDATE;
+    }   
 
-        const cedente = await this.cedenteRepository.findById(id);
+    async execute(command: IUpdateCedenteUseCaseCommand): Promise<Cedente> {
+        const cedente = await this.cedenteRepository.findById(command.id);
         if (!cedente) {
-            throw new Error('invalid.cedente.not.found');
+            throw new Error('notfound.cedente');
         }
 
-        const cedenteExists = await this.cedenteRepository.findByDocumento(documento);
+        // VALIDATION
+        await this.validate(command);
 
-        cedente.update({nome, documento, cedenteExists});
-        const cedenteUpdated = await this.cedenteRepository.update(id, cedente);
+        // USECASE LOGIC
+        const cedenteProps = {
+            ...command,
+        };
+        
+        const cedenteObj = cedente.update(cedenteProps);
+        const cedenteUpdated = await this.cedenteRepository.update(command.id, cedenteObj);
 
+        // RETURN
         return cedenteUpdated;
     }
 }

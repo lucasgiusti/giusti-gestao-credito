@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 import { Carteira } from 'src/domain/entities/carteira';
-import { FindCarteiraByIdCommand } from './carteira.command';
+
+export interface IFindCarteiraByIdUseCaseCommand {
+    id: string;
+}
 
 @Injectable()
 export class FindCarteiraByIdUseCase {
@@ -10,7 +13,7 @@ export class FindCarteiraByIdUseCase {
         private readonly carteiraRepository: ICarteiraRepository,
     ) {}
 
-    async execute(command: FindCarteiraByIdCommand): Promise<Carteira> {
+    async execute(command: IFindCarteiraByIdUseCaseCommand): Promise<Carteira> {
         const carteira = await this.carteiraRepository.findById(command.id);
         if (!carteira) {
             throw new Error('notfound.carteira');

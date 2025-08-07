@@ -3,7 +3,7 @@ import { ICedenteRepository } from 'src/application/interfaces/repositories/cede
 import { Cedente } from 'src/domain/entities/cedente';
 import { DocumentoFactory } from 'src/domain/value-objects/documento';
 
-interface FindCedenteByDocumentoUseCaseCommand {
+export interface IFindCedenteByDocumentoUseCaseCommand {
     documento: string;
 }
 
@@ -14,8 +14,8 @@ export class FindCedenteByDocumentoUseCase {
         private readonly cedenteRepository: ICedenteRepository,
     ) {}
 
-    async execute({documento}: FindCedenteByDocumentoUseCaseCommand): Promise<Cedente> {
-        const numeroDocumento = DocumentoFactory.create(documento);
+    async execute(command: IFindCedenteByDocumentoUseCaseCommand): Promise<Cedente> {
+        const numeroDocumento = DocumentoFactory.create(command.documento);
         const cedente = await this.cedenteRepository.findByDocumento(numeroDocumento.value);
 
         if (!cedente) {

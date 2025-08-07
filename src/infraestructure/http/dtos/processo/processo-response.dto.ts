@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Processo, TipoProcesso } from "src/domain/entities/processo";
 import { ParteProcessoResponseDto } from "../parte-processo/parte-processo-response.dto";
-import { PaginatedResult } from "src/application/interfaces/common/pagination.interface";
+import { IPaginatedResult } from "src/application/interfaces/common/pagination.interface";
 import { PaginatedResultDto } from "../common/paginated-result.dto";
 
 export class ProcessoResponseDto {
@@ -48,7 +48,7 @@ export class ProcessoResponseDto {
         return new ProcessoResponseDto(processo);
     }
 
-    static fromEntities(processos: Processo[] | PaginatedResult<Processo>): ProcessoResponseDto[] | PaginatedResultDto<ProcessoResponseDto> {
+    static fromEntities(processos: Processo[] | IPaginatedResult<Processo>): ProcessoResponseDto[] | PaginatedResultDto<ProcessoResponseDto> {
         if (Array.isArray(processos)) {
             return processos.map(processo => ProcessoResponseDto.fromEntity(processo));
         } else {

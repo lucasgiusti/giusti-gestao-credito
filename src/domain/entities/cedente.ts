@@ -3,7 +3,7 @@ import { Documento, DocumentoFactory } from '../value-objects/documento';
 type CedenteProps = {
     id?: string;
     nome: string;
-    documento: Documento;
+    documento: Documento | string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -18,7 +18,7 @@ export class Cedente {
     constructor(props: CedenteProps) {
         this._id = props.id;
         this._nome = props.nome;
-        this._documento = props.documento;
+        this._documento = Cedente.createDocumento(props.documento);
         this._createdAt = props.createdAt;
         this._updatedAt = props.updatedAt;
     }
@@ -43,12 +43,21 @@ export class Cedente {
         return this._updatedAt;
     }
 
-    update({ nome, documento, cedenteExists }: { nome?: string, documento?: string | Documento, cedenteExists?: Cedente | null }): void {
-        if (cedenteExists && cedenteExists.id !== this.id) {
-            throw new Error('invalid.cedente.documento.exists');
-        }
+    static create({nome, documento}: CedenteProps): Cedente {
+
+        const documentoObj = Cedente.createDocumento(documento);
+            
+        return new Cedente({
+            nome,
+            documento: documentoObj,
+        });
+    }
+
+    update({nome, documento}: CedenteProps): Cedente {
         this.updateNome(nome);
         this.updateDocumento(documento);
+
+        return this;
     }
 
     updateNome(nome: string): void {
@@ -65,30 +74,10 @@ export class Cedente {
         }
     }
 
-    canBeDeleted(existsPartes: boolean): boolean {
-        if (existsPartes) {
-            throw new Error('invalid.cedente.exists.partes');
-        }
-        return true;
-    }
-
     static createDocumento(documento: string | Documento): Documento {
         if (typeof documento === 'string') {
             return DocumentoFactory.create(documento);
         }
         return documento;
-    }
-
-    static create({nome, documento, cedenteExists}: {nome: string, documento: string | Documento, cedenteExists?: Cedente | null}): Cedente {
-
-        if (cedenteExists) {
-            throw new Error('invalid.cedente.documento.exists');
-        }
-        const documentoObj = Cedente.createDocumento(documento);
-            
-        return new Cedente({
-            nome,
-            documento: documentoObj,
-        });
     }
 }

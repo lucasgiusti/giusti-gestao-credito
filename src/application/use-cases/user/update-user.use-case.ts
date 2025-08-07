@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
-import { User } from 'src/domain/entities/user';
+import { User, UserRole, UserStatus } from 'src/domain/entities/user';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserUpdatedEvent } from 'src/domain/events/user-updated.event';
-import { MultiStageValidationRegistry } from 'src/application/validations/registry/multi-stage.registry';
-import { UpdateUserCommand } from './user.command';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
+
+export interface IUpdateUserUseCaseCommand {
+    authServiceUserId: string,
+    id: string,
+    email: string,
+    name: string,
+    userRole: UserRole,
+    status: UserStatus,
+}
 
 @Injectable()
-export class UpdateUserUseCase {
+export class UpdateUserUseCase extends BaseUseCase<IUpdateUserUseCaseCommand, User> {
 
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly eventBus: EventBusService,
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute(command: UpdateUserCommand): Promise<User> {
+    protected get validationId(): string {
+        return ValidationIdentifiers.USER_UPDATE;
+    }
+
+    async execute(command: IUpdateUserUseCaseCommand): Promise<User> {
         const user = await this.userRepository.findById(command.id);
         if (!user) {
             throw new Error('notfound.user');
@@ -32,18 +47,6 @@ export class UpdateUserUseCase {
         
         // RETURN
         return userUpdated;
-    }
-
-    private async validate(command: UpdateUserCommand): Promise<void> {
-        const validate = await MultiStageValidationRegistry.validate(
-            UpdateUserUseCase.name,
-            `${UpdateUserUseCase.name}_rules`,
-            command
-        );
-
-        if (validate.isFailure) {
-            throw new Error(validate.error);
-        }
     }
 
     private async sendEvent(userUpdated: User): Promise<void> {

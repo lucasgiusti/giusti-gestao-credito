@@ -5,7 +5,7 @@ import { ParteProcesso as ParteProcessoTypeOrm } from '../entities/parte-process
 import { ParteProcesso } from "src/domain/entities/parte-processo";
 import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
 import { TypeOrmParteProcessoMapper } from '../mapper/typeorm-parte-processo.mapper';
-import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginationOptions, IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 @Injectable()
 export class TypeOrmParteProcessoRepository implements IParteProcessoRepository {
@@ -26,7 +26,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findById(id: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
       where: { id, deleted_at: null },
-      relations: ['cedente', 'processo']
+      relations: ['cedente']
     });
     
     if (!parteProcesso) {
@@ -36,14 +36,27 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
     return TypeOrmParteProcessoMapper.toDomain(parteProcesso);
   }
 
-  async findByProcessoId(processoId: string, options?: PaginationOptions): Promise<PaginatedResult<ParteProcesso>> {
+  async findByIdAndProcessoId(id: string, processoId: string): Promise<ParteProcesso | null> {
+    const parteProcesso = await this.parteProcessoRepository.findOne({
+      where: { id, processo_id: processoId, deleted_at: null },
+      relations: ['cedente']
+    });
+    
+    if (!parteProcesso) {
+      return null;
+    }
+    
+    return TypeOrmParteProcessoMapper.toDomain(parteProcesso);
+  }
+
+  async findByProcessoId(processoId: string, options?: IPaginationOptions): Promise<IPaginatedResult<ParteProcesso>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;
     
     const [partesProcesso, total] = await this.parteProcessoRepository.findAndCount({
       where: { processo_id: processoId, deleted_at: null },
-      relations: ['cedente', 'processo'],
+      relations: ['cedente'],
       order: {
         created_at: 'DESC'
       },
@@ -62,7 +75,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
     };
   }
 
-  async findAll(options?: PaginationOptions): Promise<PaginatedResult<ParteProcesso>> {
+  async findAll(options?: IPaginationOptions): Promise<IPaginatedResult<ParteProcesso>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;
@@ -93,16 +106,7 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
     
     await this.parteProcessoRepository.update(id, data);
 
-    const updatedParteProcesso = await this.parteProcessoRepository.findOne({ 
-      where: { id, deleted_at: null },
-      relations: ['cedente', 'processo']
-    });
-    
-    if (!updatedParteProcesso) {
-      return null;
-    }
-    
-    return TypeOrmParteProcessoMapper.toDomain(updatedParteProcesso);
+    return this.findById(id);
   }
 
   async delete(id: string): Promise<void> {
@@ -116,7 +120,6 @@ export class TypeOrmParteProcessoRepository implements IParteProcessoRepository 
   async findByProcessoIdAndCedenteId(processoId: string, cedenteId: string): Promise<ParteProcesso | null> {
     const parteProcesso = await this.parteProcessoRepository.findOne({
       where: { processo_id: processoId, cedente_id: cedenteId, deleted_at: null },
-      relations: ['cedente', 'processo'],
       order: {
         created_at: 'DESC'
       }

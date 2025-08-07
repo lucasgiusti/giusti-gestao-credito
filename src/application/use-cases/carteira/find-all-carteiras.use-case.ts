@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PaginatedResult, PaginationOptions } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginatedResult, IPaginationOptions } from 'src/application/interfaces/common/pagination.interface';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 import { Carteira } from 'src/domain/entities/carteira';
-import { FindAllCarteirasCommand } from './carteira.command';
+
+export interface IFindAllCarteirasUseCaseCommand {
+    page?: number;
+    limit?: number;
+}
 
 @Injectable()
 export class FindAllCarteirasUseCase {
@@ -11,8 +15,8 @@ export class FindAllCarteirasUseCase {
         private readonly carteiraRepository: ICarteiraRepository,
     ) {}
 
-    async execute(command: FindAllCarteirasCommand): Promise<PaginatedResult<Carteira>> {
-        const paginationOptions: PaginationOptions = {
+    async execute(command: IFindAllCarteirasUseCaseCommand): Promise<IPaginatedResult<Carteira>> {
+        const paginationOptions: IPaginationOptions = {
             page: command.page ? Number(command.page) : undefined,
             limit: command.limit ? Number(command.limit) : undefined
         };

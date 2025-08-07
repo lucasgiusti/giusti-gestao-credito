@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User, UserRole, UserStatus } from 'src/domain/entities/user';
-import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { PaginatedResultDto } from '../common/paginated-result.dto';
 
 export class UserResponseDto {
@@ -47,7 +47,7 @@ export class UserResponseDto {
     return new UserResponseDto(user);
   }
 
-  static fromEntities(users: User[] | PaginatedResult<User>): UserResponseDto[] | PaginatedResultDto< UserResponseDto> {
+  static fromEntities(users: User[] | IPaginatedResult<User>): UserResponseDto[] | PaginatedResultDto< UserResponseDto> {
     if (Array.isArray(users)) {
       return users.map(user => UserResponseDto.fromEntity(user));
     } else {

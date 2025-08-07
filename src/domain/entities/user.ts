@@ -1,6 +1,3 @@
-import { UnauthorizedException } from "@nestjs/common";
-import { CreateUserCommand, UpdateUserCommand } from "src/application/use-cases/user/user.command";
-
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
     INACTIVE = 'INACTIVE',
@@ -16,8 +13,8 @@ type UserProps = {
     id?: string;
     name: string;
     email: string;
-    userRole?: UserRole;
-    status?: UserStatus;
+    userRole: UserRole;
+    status: UserStatus;
     authServiceUserId: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -39,8 +36,8 @@ export class User {
         this._id = props.id;
         this._name = props.name;
         this._email = props.email;
-        this._userRole = props.userRole || UserRole.USER;
-        this._status = props.status || UserStatus.INACTIVE;
+        this._userRole = props.userRole;
+        this._status = props.status;
         this._authServiceUserId = props.authServiceUserId;
         this._createdAt = props.createdAt;
         this._updatedAt = props.updatedAt;
@@ -107,18 +104,20 @@ export class User {
         return this._userRole === UserRole.MASTER;
     }
 
-    static createFromAuthUser(command: CreateUserCommand): User {
+    static createFromAuthUser({ name, email, authServiceUserId, userRole, status }: UserProps): User {
         return new User({
-            name: command.name,
-            email: command.authenticatedUser.email,
-            authServiceUserId: command.authenticatedUser.id,
+            name,
+            email,
+            authServiceUserId,
+            userRole,
+            status,
         });
     }
 
-    update(command: UpdateUserCommand): void {
-      this.updateName(command.name);
-      this.updateStatus(command.status);
-      this.updateUserRole(command.userRole);
+    update({ name, status, userRole }: UserProps): void {
+      this.updateName(name);
+      this.updateStatus(status);
+      this.updateUserRole(userRole);
     }
 
     updateName(name: string): void {

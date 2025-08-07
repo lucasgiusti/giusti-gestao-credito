@@ -1,30 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
-import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface DeleteProcessoUseCaseCommand {
+export interface IDeleteProcessoUseCaseCommand {
     id: string;
 }
+
 @Injectable()
-export class DeleteProcessoUseCase {
+export class DeleteProcessoUseCase extends BaseUseCase<IDeleteProcessoUseCaseCommand, void> {
 
     constructor(
         private processoRepository: IProcessoRepository,
-        private parteProcessoRepository: IParteProcessoRepository
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        id
-    }: DeleteProcessoUseCaseCommand): Promise<void> {
-        const processo = await this.processoRepository.findById(id);
+    protected get validationId(): string {
+        return ValidationIdentifiers.PROCESSO_DELETE;
+    }
+
+    async execute(command: IDeleteProcessoUseCaseCommand): Promise<void> {
+        const processo = await this.processoRepository.findById(command.id);
         if (!processo) {
             throw new Error('notfound.processo');
         }
 
-        const existsPartes = await this.parteProcessoRepository.existsByProcessoId(id);
+        // VALIDATION
+        await this.validate(command);
 
-        processo.canBeDeleted(existsPartes);
-
-        await this.processoRepository.delete(id);
+        // USECASE LOGIC
+        await this.processoRepository.delete(command.id);
     }
 }

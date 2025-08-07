@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { Carteira } from 'src/domain/entities/carteira';
 import { PaginatedResultDto } from '../common/paginated-result.dto';
 
@@ -31,7 +31,7 @@ export class CarteiraResponseDto {
     return new CarteiraResponseDto(carteira);
   }
 
-  static fromEntities(carteiras: Carteira[] | PaginatedResult<Carteira>): CarteiraResponseDto[] | PaginatedResultDto<CarteiraResponseDto> {
+  static fromEntities(carteiras: Carteira[] | IPaginatedResult<Carteira>): CarteiraResponseDto[] | PaginatedResultDto<CarteiraResponseDto> {
     if (Array.isArray(carteiras)) {
       return carteiras.map(carteira => CarteiraResponseDto.fromEntity(carteira));
     } else {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
 import { Cedente } from 'src/domain/entities/cedente';
 
-interface FindCedenteByIdUseCaseCommand {
+export interface IFindCedenteByIdUseCaseCommand {
     id: string;
 }
 
@@ -13,8 +13,8 @@ export class FindCedenteByIdUseCase {
         private readonly cedenteRepository: ICedenteRepository,
     ) {}
 
-    async execute({id}: FindCedenteByIdUseCaseCommand): Promise<Cedente> {
-        const cedente = await this.cedenteRepository.findById(id);
+    async execute(command: IFindCedenteByIdUseCaseCommand): Promise<Cedente> {
+        const cedente = await this.cedenteRepository.findById(command.id);
 
         if (!cedente) {
             throw new Error('invalid.cedente.not.found');

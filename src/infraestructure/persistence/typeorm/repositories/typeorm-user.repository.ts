@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User as UserTypeOrm } from '../entities/user.entity';
 import { User } from "src/domain/entities/user";
 import { IUserRepository } from 'src/application/interfaces/repositories/user.repository.interface';
-import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginationOptions, IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 import { TypeOrmUserMapper } from '../mapper/typeorm-user.mapper';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class TypeOrmUserRepository implements IUserRepository {
     return TypeOrmUserMapper.toDomain(user);
   }
 
-  async findAll(options?: PaginationOptions): Promise<PaginatedResult<User>> {
+  async findAll(options?: IPaginationOptions): Promise<IPaginatedResult<User>> {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;

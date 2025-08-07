@@ -12,7 +12,6 @@ import { UpdateUserDto } from '../dtos/user/update-user.dto';
 import { FindUserByIdUseCase } from 'src/application/use-cases/user/find-user-by-id.use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
 import { CreateUserDto } from '../dtos/user/create-user.dto';
-import { PaginationOptions, PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -34,8 +33,9 @@ export class UserController {
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     async create(@Authenticated() authenticatedUser: AuthenticatedUser, @Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
         const user = await this.createUserUseCase.execute({
-            authenticatedUser,
             name: createUserDto.name,
+            email: authenticatedUser.email,
+            authServiceUserId: authenticatedUser.id,
         });
         return UserResponseDto.fromEntity(user);
     }
@@ -61,9 +61,10 @@ export class UserController {
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
     async update(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         const user = await this.updateUserUseCase.execute({
-            authenticatedUser,
+            authServiceUserId: authenticatedUser.id,
             id,
             name: updateUserDto.name,
+            email: updateUserDto.email,
             status: updateUserDto.status,
             userRole: updateUserDto.userRole,
         });
@@ -90,6 +91,6 @@ export class UserController {
     @ApiResponse({ status: 401, description: 'Não autorizado' })
     @ApiResponse({ status: 403, description: 'Acesso proibido' })
     async delete(@Authenticated() authenticatedUser: AuthenticatedUser, @Param('id') id: string): Promise<void> {
-        await this.deleteUserUseCase.execute({ authenticatedUser, id });
+        await this.deleteUserUseCase.execute({ authServiceUserId: authenticatedUser.id, id });
     }
 }

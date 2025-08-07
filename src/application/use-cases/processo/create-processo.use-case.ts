@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Processo, TipoProcesso } from 'src/domain/entities/processo';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
-import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
-import { ParteProcesso } from 'src/domain/entities/parte-processo';
-import { ICedenteRepository } from 'src/application/interfaces/repositories/cedente.repository.interface';
-import { IParteProcessoRepository } from 'src/application/interfaces/repositories/parte-processo.repository.interface';
+import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
-interface CreateProcessoUseCaseCommand {
+export interface ICreateProcessoUseCaseCommand {
     numero: string;
     carteiraId: string;
     valorPedido: number;
@@ -15,39 +13,32 @@ interface CreateProcessoUseCaseCommand {
 }
 
 @Injectable()
-export class CreateProcessoUseCase {
+export class CreateProcessoUseCase extends BaseUseCase<ICreateProcessoUseCaseCommand, Processo> {
 
     constructor(
         private processoRepository: IProcessoRepository,
-        private carteiraRepository: ICarteiraRepository,
-        private cedenteRepository: ICedenteRepository,
-        private parteProcessoRepository: IParteProcessoRepository
-    ) {}
+    ) {
+        super();
+    }
 
-    async execute({
-        numero,
-        carteiraId,
-        valorPedido,
-        valorHomologado,
-        tipo,
-    }: CreateProcessoUseCaseCommand): Promise<Processo> {
-        const carteira = await this.carteiraRepository.findById(carteiraId);
-        if (!carteira) {
-            throw new Error('notfound.carteira');
-        }
+    protected get validationId(): string {
+        return ValidationIdentifiers.PROCESSO_CREATE;
+    }
 
-        const processoExists = await this.processoRepository.findByNumero(numero);
+    async execute(command: ICreateProcessoUseCaseCommand): Promise<Processo> {
+        // VALIDATION
+        await this.validate(command);
 
-        const processo = Processo.create({
-            numero,
-            carteiraId,
-            valorPedido,
-            valorHomologado,
-            tipo,
-            processoExists,
-        });
+        // USECASE LOGIC
+        const processoProps = {
+            ...command,
+            partes: [],
+        };
 
-        const processoCreated = await this.processoRepository.create(processo);
+        const processoObj = Processo.create(processoProps);
+        const processoCreated = await this.processoRepository.create(processoObj);
+
+        // RETURN
         return processoCreated;
     }
 }

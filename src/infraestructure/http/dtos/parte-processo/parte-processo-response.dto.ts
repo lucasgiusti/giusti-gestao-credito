@@ -3,7 +3,7 @@ import { ParteProcesso } from "src/domain/entities/parte-processo";
 import { CedenteResponseDto } from "../cedente/cedente-response.dto";
 import { ProcessoSimpleResponseDto } from "../processo/processo-simple-response.dto";
 import { PaginatedResultDto } from "../common/paginated-result.dto";
-import { PaginatedResult } from "src/application/interfaces/common/pagination.interface";
+import { IPaginatedResult } from "src/application/interfaces/common/pagination.interface";
 
 export class ParteProcessoResponseDto {
     @ApiProperty({ example: 'uuid-da-parte-processo' })
@@ -49,7 +49,7 @@ export class ParteProcessoResponseDto {
         return new ParteProcessoResponseDto(parteProcesso);
     }
 
-    static fromEntities(partesProcesso: ParteProcesso[] | PaginatedResult<ParteProcesso>): ParteProcessoResponseDto[] | PaginatedResultDto<ParteProcessoResponseDto> {
+    static fromEntities(partesProcesso: ParteProcesso[] | IPaginatedResult<ParteProcesso>): ParteProcessoResponseDto[] | PaginatedResultDto<ParteProcessoResponseDto> {
         if (Array.isArray(partesProcesso)) {
             return partesProcesso.map(parteProcesso => ParteProcessoResponseDto.fromEntity(parteProcesso));
         } else {

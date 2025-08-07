@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginatedResult } from 'src/application/interfaces/common/pagination.interface';
+import { IPaginatedResult } from 'src/application/interfaces/common/pagination.interface';
 
 export class PaginatedResultDto<T> {
   @ApiProperty({ description: 'Dados paginados' })
@@ -17,7 +17,7 @@ export class PaginatedResultDto<T> {
   @ApiProperty({ description: 'Total de páginas' })
   totalPages: number;
 
-  constructor(paginatedResult: PaginatedResult<any>, mapFn?: (item: any) => T) {
+  constructor(paginatedResult: IPaginatedResult<any>, mapFn?: (item: any) => T) {
     this.data = mapFn ? paginatedResult.data.map(mapFn) : paginatedResult.data;
     this.total = paginatedResult.total;
     this.page = paginatedResult.page;
@@ -26,7 +26,7 @@ export class PaginatedResultDto<T> {
   }
 
   static fromPaginatedResult<T, U>(
-    paginatedResult: PaginatedResult<T>,
+    paginatedResult: IPaginatedResult<T>,
     mapFn: (item: T) => U
   ): PaginatedResultDto<U> {
     return new PaginatedResultDto<U>(paginatedResult, mapFn);
