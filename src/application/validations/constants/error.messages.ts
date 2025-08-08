@@ -16,4 +16,11 @@ export const ErrorMessages = {
     USUARIO_COM_USERROLE_USER_NAO_PODE_EXCLUIR_USUARIO:'unauthorized.usuario.com.userrole.user.nao.pode.excluir.usuario',
     USUARIO_NAO_PODE_EXCLUIR_ELE_MESMO:'unauthorized.usuario.nao.pode.excluir.ele.mesmo',
     USUARIO_MASTER_NAO_PODE_SER_EXCLUIDO:'unauthorized.usuario.master.nao.pode.ser.excluido',
+    PROCESSO_NAO_EXISTE:'notfound.processo.nao.existe',
+    PROCESSO_NUMERO_INVALIDO: (numero: string) => `invalid.processo.numero.[${numero}]`,
+    CARTEIRA_CODIGO_NAO_EXISTE: (codigo: string) => `notfound.carteira.codigo.[${codigo}]`,
+    PROCESSO_ERRO_NO_IMPORT_CSV_NUMERO: (processo: string) => `error.processo.erro.no.import.csv.numero.[${processo}]`,
+    ERROR_ON_DELETE_USER_METADATA: 'error.on.delete.user.metadata',
+    ERROR_ON_UPDATE_USER_METADATA: 'error.on.update.user.metadata',
+    USER_NAO_EXISTE: 'notfound.user.nao.existe'
 };

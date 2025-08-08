@@ -5,6 +5,7 @@ import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserUpdatedEvent } from 'src/domain/events/user-updated.event';
 import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
 import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 
 export interface IUpdateUserUseCaseCommand {
     authServiceUserId: string,
@@ -32,7 +33,7 @@ export class UpdateUserUseCase extends BaseUseCase<IUpdateUserUseCaseCommand, Us
     async execute(command: IUpdateUserUseCaseCommand): Promise<User> {
         const user = await this.userRepository.findById(command.id);
         if (!user) {
-            throw new Error('notfound.user');
+            throw new Error(ErrorMessages.USER_NAO_EXISTE);
         }
 
         // VALIDATION

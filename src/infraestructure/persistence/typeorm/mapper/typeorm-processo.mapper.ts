@@ -14,17 +14,11 @@ export class TypeOrmProcessoMapper {
             valorPedido: entity.valor_pedido,
             valorHomologado: entity.valor_homologado,
             tipo: entity.tipo as TipoProcesso,
-            partes: [],
+            partes: entity.partes && entity.partes.length > 0 ? entity.partes.map(parte => TypeOrmParteProcessoMapper.toDomain(parte)) : [],
             createdAt: entity.created_at,
             updatedAt: entity.updated_at,
         });
-        
-        // Adicionamos as partes após a criação do processo para evitar dependência circular
-        if (entity.partes && entity.partes.length > 0) {
-            entity.partes.forEach(parte => {
-                model.addParteProcesso(TypeOrmParteProcessoMapper.toDomain(parte));
-            });
-        }
+
         return model;
     }
 

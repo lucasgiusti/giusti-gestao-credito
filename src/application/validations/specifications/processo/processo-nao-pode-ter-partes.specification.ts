@@ -17,4 +17,4 @@ export class ProcessoNaoDeveTerPartesSpecification implements IValidationSpecifi
   
       return !existsPartes;
     }
-  }
+}

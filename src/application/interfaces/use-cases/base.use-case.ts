@@ -1,4 +1,5 @@
 import { MultiStageValidationRegistry } from "src/application/validations/registry/multi-stage.registry";
+import { ValidationError } from "src/application/errors/validation.error";
 
 // BaseUseCase.ts
 export abstract class BaseUseCase<TCommand, TResult> {
@@ -11,7 +12,7 @@ export abstract class BaseUseCase<TCommand, TResult> {
             command
         );
         if (validate.isFailure) {
-            throw new Error(validate.error);
+            throw new ValidationError(validate.errors);
         }
     }
 

@@ -53,6 +53,9 @@ export class MultiStageValidationRegistry {
   ): Promise<any> {
     const errors: string[] = [];
     const stageRules = this.rules.get(useCase)?.get(stage) || [];
+    
+    if (stageRules.length > 0) {
+    }
 
     for (const rule of stageRules) {
       try {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
 
 export interface IDeleteCarteiraUseCaseCommand {
@@ -23,7 +24,7 @@ export class DeleteCarteiraUseCase extends BaseUseCase<IDeleteCarteiraUseCaseCom
     async execute(command: IDeleteCarteiraUseCaseCommand): Promise<void> {
         const carteira = await this.carteiraRepository.findById(command.id);
         if (!carteira) {
-            throw new Error('notfound.carteira');
+            throw new Error(ErrorMessages.CARTEIRA_NAO_EXISTE);
         }
 
         // VALIDATION

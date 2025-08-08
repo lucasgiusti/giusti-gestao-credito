@@ -9,6 +9,7 @@ import { TipoProcesso } from 'src/domain/entities/processo';
 import { ICarteiraRepository } from 'src/application/interfaces/repositories/carteira.repository.interface';
 import { CreateParteProcessoUseCase } from '../parte-processo/create-parte-processo.use-case';
 import { IProcessoRepository } from 'src/application/interfaces/repositories/processo.repository.interface';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 
 interface ImportProcessoCsvUseCaseCommand {
     buffer: Buffer;
@@ -36,13 +37,13 @@ export class ImportProcessoCsvUseCase {
             try {
             
                 if (!processoCsv.isValid()) {
-                    console.error(`Registro inválido: ${processoCsv.processo}`);
+                    console.error(ErrorMessages.PROCESSO_NUMERO_INVALIDO(processoCsv.processo));
                     continue;
                 }
 
                 const carteira = await this.carteiraRepository.findByCodigo(processoCsv.carteira);
                 if (!carteira) {
-                    console.error(`Carteira não encontrada: ${processoCsv.carteira}`);
+                    console.error(ErrorMessages.CARTEIRA_CODIGO_NAO_EXISTE(processoCsv.carteira));
                     continue;
                 }
 
@@ -71,7 +72,7 @@ export class ImportProcessoCsvUseCase {
                     percentual: processoCsv.aquisicao
                 });
             } catch (error) {
-                console.error(`Erro ao processar registro: ${processoCsv.processo}`, error);
+                console.error(ErrorMessages.PROCESSO_ERRO_NO_IMPORT_CSV_NUMERO(processoCsv.processo), error);
                 continue;
             }
         }
@@ -113,7 +114,7 @@ export class ImportProcessoCsvUseCase {
                     resolve(results);
                 })
                 .on('error', (error) => {
-                    reject(new Error(`Erro ao processar arquivo CSV: ${error.message}`));
+                    reject(new Error(ErrorMessages.PROCESSO_ERRO_NO_IMPORT_CSV_NUMERO(error.message)));
                 });
         });
     }

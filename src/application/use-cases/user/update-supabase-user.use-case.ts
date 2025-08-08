@@ -5,6 +5,7 @@ import { UserCreatedEvent } from 'src/domain/events/user-created.event';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserUpdatedEvent } from 'src/domain/events/user-updated.event';
 import { User } from 'src/domain/entities/user';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 
 @Injectable()
 export class UpdateSupabaseUserUseCase {
@@ -42,7 +43,7 @@ export class UpdateSupabaseUserUseCase {
       );
       
       if (error) {
-        throw new Error('error.on.update.user.metadata');
+        throw new Error(ErrorMessages.ERROR_ON_UPDATE_USER_METADATA);
       }
     } catch (error) {
       throw error;

@@ -14,6 +14,7 @@ import { ErrorMessages } from "../constants/error.messages";
 export class ProcessoValidationsSetup {
     static initialize(processoRepository: IProcessoRepository, carteiraRepository: ICarteiraRepository, parteProcessoRepository: IParteProcessoRepository) {
 
+      // CREATE
       ValidationHelper.registerValidation<ICreateProcessoUseCaseCommand, { numero: string }>(
         ValidationIdentifiers.PROCESSO_CREATE,
         ErrorMessages.PROCESSO_JA_EXISTE,
@@ -32,6 +33,7 @@ export class ProcessoValidationsSetup {
         })
       );
 
+      // UPDATE
       ValidationHelper.registerValidation<IUpdateProcessoUseCaseCommand, { id: string, numero: string }>(
         ValidationIdentifiers.PROCESSO_UPDATE,
         ErrorMessages.PROCESSO_JA_EXISTE,
@@ -51,13 +53,16 @@ export class ProcessoValidationsSetup {
         })
       );
 
+      // DELETE
       ValidationHelper.registerValidation<IDeleteProcessoUseCaseCommand, { id: string }>(
         ValidationIdentifiers.PROCESSO_DELETE,
         ErrorMessages.PROCESSO_TEM_PARTES,
         new ProcessoNaoDeveTerPartesSpecification(parteProcessoRepository),
-        (cmd) => ({
-          id: cmd.id,
-        })
+        (cmd) => {
+          return {
+            id: cmd.id,
+          };
+        }
       );
     }
 }

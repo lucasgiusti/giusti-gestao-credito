@@ -4,6 +4,7 @@ import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
 import { BaseUseCase } from 'src/application/interfaces/use-cases/base.use-case';
 import { ValidationIdentifiers } from 'src/application/validations/constants/validation-identifiers';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 
 export interface IDeleteUserUseCaseCommand {
     authServiceUserId: string,
@@ -27,7 +28,7 @@ export class DeleteUserUseCase extends BaseUseCase<IDeleteUserUseCaseCommand, vo
     async execute(command: IDeleteUserUseCaseCommand): Promise<void> {
         const user = await this.userRepository.findById(command.id);
         if (!user) {
-            throw new Error('notfound.user');
+            throw new Error(ErrorMessages.USER_NAO_EXISTE);
         }
 
         // VALIDATION

@@ -4,9 +4,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { PersistenceModule } from './infraestructure/persistence/persistence.module';
 import { HttpModule } from './infraestructure/http/http.module';
 import { SupabaseModule } from './infraestructure/config/supabase.module';
+import { LoggingModule } from './infraestructure/logging/logging.module';
+import { ValidationsModule } from './application/validations/validations.module';
 
 @Module({
   imports: [
+    LoggingModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
@@ -18,6 +21,7 @@ import { SupabaseModule } from './infraestructure/config/supabase.module';
     HttpModule,
     ScheduleModule.forRoot(),
     SupabaseModule,
+    ValidationsModule,
   ],
   controllers: [],
   providers: [],

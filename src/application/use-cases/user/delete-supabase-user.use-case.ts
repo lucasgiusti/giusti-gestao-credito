@@ -3,6 +3,7 @@ import { SupabaseService } from 'src/infraestructure/config/supabase.config';
 import { DomainEvent } from 'src/application/interfaces/common/domain-event.interface';
 import { EventBusService } from 'src/infraestructure/events/event-bus.service';
 import { UserDeletedEvent } from 'src/domain/events/user-deleted.event';
+import { ErrorMessages } from 'src/application/validations/constants/error.messages';
 
 @Injectable()
 export class DeleteSupabaseUserUseCase {
@@ -26,7 +27,7 @@ export class DeleteSupabaseUserUseCase {
       );
       
       if (error) {
-        throw new Error('error.on.delete.user.metadata');
+        throw new Error(ErrorMessages.ERROR_ON_DELETE_USER_METADATA);
       }
     } catch (error) {
       throw error;
