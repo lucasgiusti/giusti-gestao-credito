@@ -1,3 +1,5 @@
+import { ErrorMessages } from "src/application/validations/constants/error.messages";
+
 // Tipo de documento
 export enum DocumentoTipo {
   CPF = 'CPF',
@@ -22,7 +24,7 @@ export abstract class Documento implements IDocumento {
     this._value = value.replace(/\D/g, '');
     
     if (!this.isValid()) {
-      throw new Error(`invalid.document`);
+      throw new Error(ErrorMessages.DOCUMENTO_INVALIDO);
     }
   }
 
@@ -157,7 +159,7 @@ export class DocumentoFactory {
     } else if (apenasNumeros.length === 14) {
       return new CNPJ(value);
     } else {
-      throw new Error(`invalid.document`);
+      throw new Error(ErrorMessages.DOCUMENTO_INVALIDO);
     }
   }
 }

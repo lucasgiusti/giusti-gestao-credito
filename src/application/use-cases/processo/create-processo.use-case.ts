@@ -32,7 +32,6 @@ export class CreateProcessoUseCase extends BaseUseCase<ICreateProcessoUseCaseCom
         // USECASE LOGIC
         const processoProps = {
             ...command,
-            partes: [],
         };
 
         const processoObj = Processo.create(processoProps);

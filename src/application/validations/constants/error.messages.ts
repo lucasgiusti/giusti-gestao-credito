@@ -22,5 +22,6 @@ export const ErrorMessages = {
     PROCESSO_ERRO_NO_IMPORT_CSV_NUMERO: (processo: string) => `error.processo.erro.no.import.csv.numero.[${processo}]`,
     ERROR_ON_DELETE_USER_METADATA: 'error.on.delete.user.metadata',
     ERROR_ON_UPDATE_USER_METADATA: 'error.on.update.user.metadata',
-    USER_NAO_EXISTE: 'notfound.user.nao.existe'
+    USER_NAO_EXISTE: 'notfound.user.nao.existe',
+    DOCUMENTO_INVALIDO: 'invalid.documento'
 };
